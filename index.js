@@ -1,7 +1,5 @@
 let roli = require("./api/rolimons")
 let { setIntervalAsync } = require("set-interval-async/dynamic")
-//console.log("hello boys")
-
 
 let i = 1
 
