@@ -78,6 +78,7 @@ let items = async () => {
     
 }
 
+// TODO: implement ad send function
 let sendAd = async () => {
 //     await fetch("https://www.rolimons.com/tradeapi/create", {
 //     "credentials": "include",
