@@ -1,0 +1,15 @@
+{
+  "name": "roblox-trading-bot",
+  "version": "0.0.1",
+  "description": "how 2 get t3h mon3yz",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Awesomerly",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.1",
+    "set-interval-async": "^1.0.33"
+  }
+}
