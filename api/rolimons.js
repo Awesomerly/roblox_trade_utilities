@@ -54,7 +54,7 @@ let items = async () => {
     if (isBanned) throw new Error("Banned.")
     let resp = await fetch("https://www.rolimons.com/itemapi/itemdetails")
         .then(handleErrors)
-        .then(res => res.json)
+        .then(res => res.json())
 
     let formattedInfo = Object.fromEntries(Object.entries(resp.items).map(([assetId, assetArr]) => {
         let assetInfo = {
