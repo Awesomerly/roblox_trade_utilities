@@ -9,6 +9,7 @@
   "author": "Awesomerly",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "node-fetch": "^2.6.1",
     "set-interval-async": "^1.0.33"
   }
