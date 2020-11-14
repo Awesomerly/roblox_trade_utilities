@@ -51,6 +51,7 @@ let activity = async () => {
     return {onsale, sold}
 }
 
+// TODO: play around with formatting of the response to this endpoint
 let items = async () => {
     if (isBanned) throw new Error("Banned.")
     let resp = await fetch("https://www.rolimons.com/itemapi/itemdetails")
