@@ -6,7 +6,6 @@ let handleErrors = (response) => {
     if (response.status == 403) {
         setBan()
         throw new Error("Banned.")
-        //put the ban interval
     }
     if (!response.ok) throw Error(response.statusText)
     return response
@@ -21,13 +20,12 @@ let setBan = () => {
 
 let activity = async () => {
     if (isBanned) throw new Error("Banned.")
-    // ugly repeated code :( how do i make it not repeat *cries*
     let resp = await fetch('https://www.rolimons.com/api/activity')
         .then(handleErrors)
         .then(res => res.json())
         .then(json => json.activities)
 
-    // figure out what happens when a new item gets released.
+    // TODO figure out what happens when a new item gets released.
     resp = resp.sort((a, b) => b[0] - a[0])
 
     let onsale = resp
