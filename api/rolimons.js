@@ -105,6 +105,3 @@ module.exports = {
         return isBanned
     }
 }
-
-// exports.activity = activity
-// exports.items = items
