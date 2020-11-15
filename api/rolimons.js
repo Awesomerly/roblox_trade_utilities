@@ -1,3 +1,5 @@
+// TODO: refresh token when sending trade is fucked
+
 let fetch = require("node-fetch")
 
 let isBanned = false
