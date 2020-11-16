@@ -1,6 +1,5 @@
-// TODO: refresh token when sending trade is fucked
-
 let fetch = require("node-fetch")
+let jwt_decode = require("jwt-decode")
 
 let isBanned = false
 
@@ -78,29 +77,39 @@ let items = async () => {
     
 }
 
-// TODO: implement ad send function
-let sendAd = async () => {
-//     await fetch("https://www.rolimons.com/tradeapi/create", {
-//     "credentials": "include",
-//     "headers": {
-//         "User-Agent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0",
-//         "Accept": "application/json, text/javascript, */*; q=0.01",
-//         "Accept-Language": "en-US,en;q=0.5",
-//         "Content-Type": "application/json",
-//         "X-Requested-With": "XMLHttpRequest"
-//     },
-//     "referrer": "https://www.rolimons.com/tradeadcreate",
-//     "body": "{\"player_id\":1509841678,\"offer_item_ids\":[1743932756,162066057,19027209],\"request_item_ids\":[],\"request_tags\":[\"any\"]}",
-//     "method": "POST",
-//     "mode": "cors"
-//     });
-    return
+// TODO: If the token expires at a reasonable time, when there's an error, regenerate a token
+// TODO: Throw errors if stuff goes wrong
+let sendAd = async (offerIds, requestIds = [], tags = []) => {
+    //const tags = ["any", "demand", "rares", "robux", "upgrade", "downgrade"]
+    // extracting player id from the cookie itself...
+    let playerId = jwt_decode(process.env.ROLIVERIFICATION).player_data.id
+    console.log(playerId)
+    let reqBody = {
+        player_id: playerId,
+        offer_item_ids: offerIds,
+        request_item_ids: requestIds,
+        request_tags: tags
+    }
+
+    console.log(JSON.stringify(reqBody))
+
+    let resp = await fetch("https://www.rolimons.com/tradeapi/create", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            cookie: `_RoliVerification=${process.env.ROLIVERIFICATION}`
+        },
+        body: JSON.stringify(reqBody),
+    }).then(res => res.json());
+
+    return resp
 }
 
 module.exports = {
     activity,
     items,
     setBan,
+    sendAd,
     get isBanned() {
         return isBanned
     }
