@@ -1,5 +1,5 @@
-let fetch = require("node-fetch")
-let jwt_decode = require("jwt-decode")
+import fetch from "node-fetch"
+import jwt_decode from "jwt-decode"
 
 let isBanned = false
 
@@ -19,9 +19,9 @@ let setBan = () => {
     }
 }
 
-let activity = async () => {
+export const activity = async () => {
     if (isBanned) throw new Error("Banned.")
-    let resp = await fetch('https://www.rolimons.com/api/activity')
+    let resp = await fetch('https://www.rolimons.com/api/activity2')
         .then(handleErrors)
         .then(res => res.json())
         .then(json => json.activities)
@@ -51,7 +51,7 @@ let activity = async () => {
 }
 
 // TODO: play around with formatting of the response to this endpoint
-let items = async () => {
+export const items = async () => {
     if (isBanned) throw new Error("Banned.")
     let resp = await fetch("https://www.rolimons.com/itemapi/itemdetails")
         .then(handleErrors)
@@ -79,7 +79,7 @@ let items = async () => {
 
 // TODO: If the token expires at a reasonable time, when there's an error, regenerate a token
 // TODO: Throw errors if stuff goes wrong
-let sendAd = async (offerIds, requestIds = [], tags = []) => {
+export const sendAd = async (offerIds, requestIds = [], tags = []) => {
     //const tags = ["any", "demand", "rares", "robux", "upgrade", "downgrade"]
     // extracting player id from the cookie itself...
     let playerId = jwt_decode(process.env.ROLIVERIFICATION).player_data.id
@@ -104,7 +104,7 @@ let sendAd = async (offerIds, requestIds = [], tags = []) => {
 
     return resp
 }
-
+/*
 module.exports = {
     activity,
     items,
@@ -113,4 +113,4 @@ module.exports = {
     get isBanned() {
         return isBanned
     }
-}
+}*/
