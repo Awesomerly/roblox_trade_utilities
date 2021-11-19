@@ -3,13 +3,20 @@ import jwt_decode from "jwt-decode"
 
 let isBanned = false
 
-export const demandLevels = Object.freeze({
-	NONE: -1,
+export const demand = Object.freeze({
 	TERRIBLE: 0,
 	LOW: 1,
 	NORMAL: 2,
 	HIGH: 3,
 	AMAZING: 4
+})
+
+export const trend = Object.freeze({
+	LOWERING: 0,
+	UNSTABLE: 1,
+	STABLE: 2,
+	RAISING: 3,
+	FLUCTUATING: 4
 })
 
 let handleErrors = (response) => {
