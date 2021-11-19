@@ -3,6 +3,15 @@ import jwt_decode from "jwt-decode"
 
 let isBanned = false
 
+export const demandLevels = Object.freeze({
+	NONE: -1,
+	TERRIBLE: 0,
+	LOW: 1,
+	NORMAL: 2,
+	HIGH: 3,
+	AMAZING: 4
+})
+
 let handleErrors = (response) => {
     if (response.status == 403) {
         setBan()
@@ -19,9 +28,9 @@ let setBan = () => {
     }
 }
 
-export const activity = async () => {
+export const sales = async () => {
     if (isBanned) throw new Error("Banned.")
-    let resp = await fetch('https://www.rolimons.com/api/activity2')
+    let resp = await fetch('https://www.rolimons.com/api/activity')
         .then(handleErrors)
         .then(res => res.json())
         .then(json => json.activities)
@@ -29,25 +38,16 @@ export const activity = async () => {
     // TODO figure out what happens when a new item gets released.
     resp = resp.sort((a, b) => b[0] - a[0])
 
-    let onsale = resp
-        .filter(act => act[1] == 0)
-        .map(x => ({
-            'timestamp': x[0], 
-            'assetId': parseInt(x[2]),
-            'price': x[3],
-            'rap': x[4]
-        }))
-    
     let sold = resp
         .filter(act => act[1] == 1)
         .map(x => ({
             'timestamp': x[0], 
-            'assetId': parseInt(x[2]),
+            'assetId': x[2],
             'oldRap': x[3],
             'newRap': x[4]
         }))
 
-    return {onsale, sold}
+    return sold 
 }
 
 // TODO: play around with formatting of the response to this endpoint
