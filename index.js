@@ -21,7 +21,7 @@ let resp = await rbx.request("https://economy.roblox.com/v1/users/16651514/curre
 	method: "GET"
 })
 
-let resp2 = await roli.activity()
+let resp2 = await roli.getTable()
 
 console.log(await resp.json())
 console.log(resp2)
