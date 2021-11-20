@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^10.0.0",
+    "jsdom": "^18.1.0",
     "jwt-decode": "^3.1.2",
     "node-fetch": "^3.1.0",
     "set-interval-async": "^2.0.3"

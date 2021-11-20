@@ -1,5 +1,6 @@
 import fetch from "node-fetch"
 import jwt_decode from "jwt-decode"
+import { JSDOM } from "jsdom"
 
 let isBanned = false
 
@@ -84,10 +85,33 @@ export const getItems = async () => {
     
 }
 
+// TODO: add labels to this
+export const getTable = async () => {
+	if (isBanned) throw new Error("Banned.")
+
+	const pagetxt = await fetch("https://www.rolimons.com/itemtable")
+		.then(handleErrors)
+		.then(res => res.text())
+
+	// using jsdom to parse the text
+	const dom = new JSDOM(pagetxt)
+	const doc = dom.window.document.body
+
+	// get all script text
+	const scripts = [...doc.querySelectorAll("script")]
+		.map(x=>x.textContent)
+
+	// find script with right variable declaration in it
+	const tableScr = scripts.filter((str) => str.includes("item_details"))[0]
+	// slice from the first curly bracket to before the ending semicolon
+	const obj = tableScr.slice(tableScr.indexOf("{"), -1)
+
+	return JSON.parse(obj)[1073690]
+}
+
 // TODO: If the token expires at a reasonable time, when there's an error, regenerate a token
 // TODO: Throw errors if stuff goes wrong
 export const sendAd = async (offerIds, requestIds = [], tags = []) => {
-    //const tags = ["any", "demand", "rares", "robux", "upgrade", "downgrade"]
     // extracting player id from the cookie itself...
     let playerId = jwt_decode(process.env.ROLIVERIFICATION).player_data.id
     console.log(playerId)
