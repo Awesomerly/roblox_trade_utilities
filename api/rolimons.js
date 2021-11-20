@@ -19,6 +19,7 @@ export const trend = Object.freeze({
 	FLUCTUATING: 4
 })
 
+// TODO throw error msgs that mean something outside of this bot :)
 let handleErrors = (response) => {
     if (response.status == 403) {
         setBan()
@@ -31,11 +32,11 @@ let handleErrors = (response) => {
 let setBan = () => {
     if (isBanned === false) {
         isBanned = true
-        setTimeout(() => {isBanned = false}, 5000)
+        setTimeout(() => {isBanned = false}, 60000)
     }
 }
 
-export const sales = async () => {
+export const getSales = async () => {
     if (isBanned) throw new Error("Banned.")
     let resp = await fetch('https://www.rolimons.com/api/activity')
         .then(handleErrors)
@@ -57,8 +58,7 @@ export const sales = async () => {
     return sold 
 }
 
-// TODO: play around with formatting of the response to this endpoint
-export const items = async () => {
+export const getItems = async () => {
     if (isBanned) throw new Error("Banned.")
     let resp = await fetch("https://www.rolimons.com/itemapi/itemdetails")
         .then(handleErrors)
