@@ -85,6 +85,28 @@ export const getItems = async () => {
     
 }
 
+/*
+ * TABLE FORMAT
+ * 0: name
+ * 1: asset type 
+ * 2: orig price
+ * 3+4: creation + limited date
+ * 5: best price
+ * 6: favs
+ * 7: sellers
+ * 8: rap
+ * 9: owners
+ * 10: prem owners
+ * 11: total copies
+ * 12: deleted copies
+ * 13: prem copies
+ * 14: hoarded copies
+ * 15: acronym
+ * 16: value
+ * 
+ * 22: default value 
+ */
+
 // TODO: add labels to this
 export const getTable = async () => {
 	if (isBanned) throw new Error("Banned.")
@@ -106,7 +128,7 @@ export const getTable = async () => {
 	// slice from the first curly bracket to before the ending semicolon
 	const obj = tableScr.slice(tableScr.indexOf("{"), -1)
 
-	return JSON.parse(obj)[1073690]
+	return JSON.parse(obj)
 }
 
 // TODO: If the token expires at a reasonable time, when there's an error, regenerate a token
