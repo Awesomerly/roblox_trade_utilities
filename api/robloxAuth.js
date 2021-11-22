@@ -3,14 +3,14 @@ let csrf = ""
 
 // I love plagarism
 // https://robloxapi.wiki/wiki/X-CSRF-Token#JavaScript_(with_Node.js)_-c7d10c
-export const request = async (url, options) => {
+export async function request(url, options) {
     const response = await fetch(url, {
         headers: {
             Cookie: `.ROBLOSECURITY=${process.env.ROBLOSECURITY};`,
             "x-csrf-token": csrf,
             "Content-Type": "application/json"
         },
-	...options
+        ...options
     });
 
     if (response.status == 403) {
@@ -21,12 +21,12 @@ export const request = async (url, options) => {
     }
 
     return response;
-};
+}
 
 
-export const refreshCsrf = async () => {
-	await rbxRequest("https://auth.roblox.com", {
-		method: "POST"
-	})
+export async function refreshCsrf() {
+    await rbxRequest("https://auth.roblox.com", {
+        method: "POST"
+    });
 }
 
