@@ -14,14 +14,13 @@ setIntervalAsync(() => {
 import { config } from 'dotenv';
 config()
 
-import * as rbx from './api/robloxAuth.js'
+import { getItems } from './api/robloxMarket.js';
 import * as roli from './api/rolimons.js'
-
-let resp = await rbx.request("https://economy.roblox.com/v1/users/16651514/currency", {
-	method: "GET"
-})
+import calcPerathax from './modules/perathax.js'
 
 let resp2 = await roli.getTable()
+let truncatedTable = calcPerathax(resp2).slice(0,99)
+console.log(truncatedTable)
+let resp3 = await getItems(truncatedTable)
 
-console.log(await resp.json())
-console.log(resp2)
+console.log(resp3)

@@ -8,6 +8,7 @@ export const request = async (url, options) => {
         headers: {
             Cookie: `.ROBLOSECURITY=${process.env.ROBLOSECURITY};`,
             "x-csrf-token": csrf,
+            "Content-Type": "application/json"
         },
 	...options
     });
@@ -15,7 +16,7 @@ export const request = async (url, options) => {
     if (response.status == 403) {
         if (response.headers.has("x-csrf-token")) {
             csrf = response.headers.get("x-csrf-token");
-            return rbxRequest(url, options);
+            return request(url, options);
         }
     }
 
