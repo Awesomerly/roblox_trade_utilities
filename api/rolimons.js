@@ -21,24 +21,26 @@ export const trend = Object.freeze({
 })
 
 // TODO throw error msgs that mean something outside of this bot :)
-let handleErrors = (response) => {
+function handleErrors(response) {
     if (response.status == 403) {
         setBan()
         throw new Error("Banned.")
     }
-    if (!response.ok) throw Error(response.statusText)
+    if (!response.ok)
+        throw Error(response.statusText)
     return response
 }
 
-let setBan = () => {
+function setBan() {
     if (isBanned === false) {
         isBanned = true
-        setTimeout(() => {isBanned = false}, 60000)
+        setTimeout(() => { isBanned = false }, 60000)
     }
 }
 
-export const getSales = async () => {
-    if (isBanned) throw new Error("Banned.")
+export async function getSales() {
+    if (isBanned)
+        throw new Error("Banned.")
     let resp = await fetch('https://www.rolimons.com/api/activity')
         .then(handleErrors)
         .then(res => res.json())
@@ -50,17 +52,18 @@ export const getSales = async () => {
     let sold = resp
         .filter(act => act[1] == 1)
         .map(x => ({
-            'timestamp': x[0], 
+            'timestamp': x[0],
             'assetId': x[2],
             'oldRap': x[3],
             'newRap': x[4]
         }))
 
-    return sold 
+    return sold
 }
 
-export const getItems = async () => {
-    if (isBanned) throw new Error("Banned.")
+export async function getItems() {
+    if (isBanned)
+        throw new Error("Banned.")
     let resp = await fetch("https://www.rolimons.com/itemapi/itemdetails")
         .then(handleErrors)
         .then(res => res.json())
@@ -71,18 +74,23 @@ export const getItems = async () => {
             "rap": assetArr[2]
         }
 
-        if (assetArr[1].length > 0) assetInfo.acronym = assetArr[1]
-        if (assetArr[3] >= 0)       assetInfo.value = assetArr[3] 
-        if (assetArr[5] >= 0)       assetInfo.demand = assetArr[5]
-        if (assetArr[6] >= 0)       assetInfo.trend = assetArr[6]
-        if (assetArr[9] == 1)       assetInfo.rare = true
+        if (assetArr[1].length > 0)
+            assetInfo.acronym = assetArr[1]
+        if (assetArr[3] >= 0)
+            assetInfo.value = assetArr[3]
+        if (assetArr[5] >= 0)
+            assetInfo.demand = assetArr[5]
+        if (assetArr[6] >= 0)
+            assetInfo.trend = assetArr[6]
+        if (assetArr[9] == 1)
+            assetInfo.rare = true
 
 
         return [assetId, assetInfo]
     }))
 
     return formattedInfo
-    
+
 }
 
 /*
@@ -108,32 +116,33 @@ export const getItems = async () => {
  */
 
 // TODO: add labels to this
-export const getTable = async () => {
-	if (isBanned) throw new Error("Banned.")
+export async function getTable() {
+    if (isBanned)
+        throw new Error("Banned.")
 
-	const pagetxt = await fetch("https://www.rolimons.com/itemtable")
-		.then(handleErrors)
-		.then(res => res.text())
+    const pagetxt = await fetch("https://www.rolimons.com/itemtable")
+        .then(handleErrors)
+        .then(res => res.text())
 
-	// using jsdom to parse the text
-	const dom = new JSDOM(pagetxt)
-	const doc = dom.window.document.body
+    // using jsdom to parse the text
+    const dom = new JSDOM(pagetxt)
+    const doc = dom.window.document.body
 
-	// get all script text
-	const scripts = [...doc.querySelectorAll("script")]
-		.map(x=>x.textContent)
+    // get all script text
+    const scripts = [...doc.querySelectorAll("script")]
+        .map(x => x.textContent)
 
-	// find script with right variable declaration in it
-	const tableScr = scripts.filter((str) => str.includes("item_details"))[0]
-	// slice from the first curly bracket to before the ending semicolon
-	const obj = tableScr.slice(tableScr.indexOf("{"), -1)
+    // find script with right variable declaration in it
+    const tableScr = scripts.filter((str) => str.includes("item_details"))[0]
+    // slice from the first curly bracket to before the ending semicolon
+    const obj = tableScr.slice(tableScr.indexOf("{"), -1)
 
-	return JSON.parse(obj)
+    return JSON.parse(obj)
 }
 
 // TODO: If the token expires at a reasonable time, when there's an error, regenerate a token
 // TODO: Throw errors if stuff goes wrong
-export const sendAd = async (offerIds, requestIds = [], tags = []) => {
+export async function sendAd(offerIds, requestIds = [], tags = []) {
     // extracting player id from the cookie itself...
     let playerId = jwt_decode(process.env.ROLIVERIFICATION).player_data.id
     console.log(playerId)
@@ -153,17 +162,7 @@ export const sendAd = async (offerIds, requestIds = [], tags = []) => {
             cookie: `_RoliVerification=${process.env.ROLIVERIFICATION}`
         },
         body: JSON.stringify(reqBody),
-    }).then(res => res.json());
+    }).then(res => res.json())
 
     return resp
 }
-/*
-module.exports = {
-    activity,
-    items,
-    setBan,
-    sendAd,
-    get isBanned() {
-        return isBanned
-    }
-}*/
