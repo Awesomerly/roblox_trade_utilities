@@ -27,8 +27,13 @@ export function calcPerathax(table) {
 	return perathax
 }
 
-export function perathaxToRequest(table) {
+export function perathaxToBody(table) {
 		return table.map((elem) => {
-			 return { itemType: "Asset", id: elem.id }
+			return { list: 
+				{ 
+					itemType: "Asset",
+				  	id: elem.id 
+				}
+			}
 		})
 }
