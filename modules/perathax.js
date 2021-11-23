@@ -1,4 +1,4 @@
-function calcPerathax(table) {
+export function calcPerathax(table) {
 	// default value: 22
 	// available: 11 - 12
 	let truncated = []
@@ -23,9 +23,12 @@ function calcPerathax(table) {
 		// sort by perathax
 		.sort((a, b) => b.peraRank - a.peraRank)
 		// take out everything that isn't id 
-		.map((elem) => { return { itemType: "Asset", id: elem.id }})
 
 	return perathax
 }
 
-export default calcPerathax
+export function perathaxToRequest(table) {
+		return table.map((elem) => {
+			 return { itemType: "Asset", id: elem.id }
+		})
+}
