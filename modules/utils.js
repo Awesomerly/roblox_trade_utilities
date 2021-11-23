@@ -1,4 +1,4 @@
-import * as rbx from '../api/robloxAuth.js'
+import { request } from '../api/roblox.js'
 
 export async function paginate(url) {
     let result = []
@@ -7,7 +7,7 @@ export async function paginate(url) {
 
     let getPages = async () => {
         while (nextPageCursor) {
-            let resp = await rbx.request(url + `&cursor=${nextPageCursor}`)
+            let resp = await request(url + `&cursor=${nextPageCursor}`)
                 .then(x => x.json())
 
             result.push(...resp.data)
