@@ -29,8 +29,8 @@ export function calcPerathax(table) {
 
 export function perathaxToBody(table) {
 		return table.map((elem) => {
-			return { list: 
-				{ 
+			return { 
+				list: { 
 					itemType: "Asset",
 				  	id: elem.id 
 				}
