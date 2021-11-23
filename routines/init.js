@@ -4,10 +4,8 @@ import playerInfoRoutine from './playerInfo.js'
 import roliRoutine from './rolimons.js'
 
 async function start(fn, ms) {
-    const randomMs = ms + (0.008 * ms * Math.random())
-    console.log(`MS: ${randomMs}`)
     await fn()
-    setIntervalAsync(fn, randomMs)
+    setIntervalAsync(fn, ms)
 }
 
 async function startEverything() {
