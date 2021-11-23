@@ -6,9 +6,7 @@ export async function getBatchInfo(list) {
 
     let resp = await request(link, {
         method: "POST",
-        body: JSON.stringify({
-            "items": list
-        })
+        json: { items: list }
     })
 
     return await resp.json()
