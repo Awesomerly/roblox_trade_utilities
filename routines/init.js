@@ -8,6 +8,8 @@ async function start(fn, ms) {
     setIntervalAsync(fn, ms)
 }
 
+// TODO: ERROR HANDLING BASED OFF THE FAULTY COMPONENT
+
 async function startEverything() {
         await start(playerInfoRoutine, 60000)
         await start(roliRoutine, 20000)
