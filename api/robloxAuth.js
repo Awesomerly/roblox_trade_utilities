@@ -1,6 +1,8 @@
 import fetch from "node-fetch"
 let csrf = ""
 
+// TODO: have a module that imports all of these apis
+
 // I love plagarism
 // https://robloxapi.wiki/wiki/X-CSRF-Token#JavaScript_(with_Node.js)_-c7d10c
 export async function request(url, options) {
