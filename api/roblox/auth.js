@@ -1,7 +1,6 @@
 import { fetch } from "fetch-h2"
 let csrf = ""
 
-// TODO: have a module that imports all of these apis
 // TODO: enable multi cookie drifting
 
 // I love plagarism
@@ -28,7 +27,7 @@ export async function request(url, options) {
 
 
 export async function refreshCsrf() {
-    await rbxRequest("https://auth.roblox.com", {
+    await request("https://auth.roblox.com", {
         method: "POST"
     });
 }

@@ -1,4 +1,4 @@
-import * as self from '../api/robloxSelf.js'
+import * as rbx from '../api/roblox.js'
 import obj from '../modules/objects.js'
 
 let fired
@@ -6,7 +6,7 @@ async function doOnce() {
     if (fired) return
     fired = true
     
-    let userInfo = await self.getAuthInfo()
+    let userInfo = await rbx.self.getAuthInfo()
 
     obj.MyInfo.id = userInfo.id
     obj.MyInfo.name = userInfo.name
@@ -16,10 +16,8 @@ async function doOnce() {
 async function routine() {
     await doOnce()
 
-    let robux = await self.getRobux()
+    let robux = await rbx.self.getRobux()
     obj.MyInfo.robux = robux
-
-    console.log(obj.MyInfo)
 }
 
 export default routine
