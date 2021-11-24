@@ -12,6 +12,11 @@ export async function getBatchInfo(list) {
     return await resp.json()
 }
 
+export async function getResellers(id) {
+    return await rbx.request(`https://economy.roblox.com/v1/assets/${id}/resale-data`)
+        .then(resp => resp.json())
+}
+
 export async function getPlayerInventory(id) {
     return await paginate(
         `https://inventory.roblox.com/v1/users/${id}/assets/collectibles?sortOrder=Asc&limit=100`
