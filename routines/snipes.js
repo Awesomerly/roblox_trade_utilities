@@ -5,7 +5,8 @@ import { perathaxToBody } from "../modules/perathax.js"
 import productIdList from "../modules/productIds.js"
 
 let snipeCache = {}
-const minPercent = 45
+let cached = false
+const minPercent = 40
 const maxPercent = 70
 
 async function getSnipes() {
@@ -17,8 +18,10 @@ async function getSnipes() {
         perathaxToBody(filteredPera)
     )
 
-    const promiseArray = []
+    const date = new Date()
 
+    const promiseArray = []
+    
     for (const item of itemResp.data) {
         const oldPrice = snipeCache[item.id]
         if (oldPrice != item.lowestPrice) {
@@ -26,7 +29,9 @@ async function getSnipes() {
             const dealPercent = Math.round((1 - (item.lowestPrice / value)) * 100)
 
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
-            console.log(`${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${dealPercent}% \x1b[0m`)
+            if (cached) {
+                console.log(`${date.toLocaleTimeString('it-IT')} ${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${dealPercent}% \x1b[0m`)
+            }
     
             if (dealPercent >= minPercent && 
                 dealPercent <= maxPercent) {
@@ -35,9 +40,11 @@ async function getSnipes() {
         }
 
         if (item.lowestPrice) {
-        snipeCache[item.id] = item.lowestPrice
+            snipeCache[item.id] = item.lowestPrice
         }
     }
+
+    if (!cached) cached = true
 
     await Promise.all(promiseArray)
 }
