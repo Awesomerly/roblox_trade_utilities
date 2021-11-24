@@ -11,7 +11,7 @@ const maxPercent = 70
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
         .filter(elem => obj.ItemsList[elem.id].value)
-        .slice(0, 30)
+        .slice(0, 100)
 
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
