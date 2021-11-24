@@ -36,6 +36,21 @@ export async function getResellers(id) {
     return resp.data
 }
 
+export async function purchaseItem(productId, price, sellerId, userAssetId) {
+
+    const purchase = await request(`https://economy.roblox.com/v1/purchases/products/${productId}`, {
+        method: 'POST',
+        json: {
+            expectedCurrency: 1,
+            expectedPrice: price,
+            expectedSellerId: sellerId,
+            userAssetId: userAssetId
+        }
+    }).then(res => res.json())
+    
+    return purchase
+}
+
 export async function getPlayerInventory(id) {
     return await paginate(
         `https://inventory.roblox.com/v1/users/${id}/assets/collectibles?sortOrder=Asc&limit=100`
