@@ -1,3 +1,91 @@
+import * as rbx from "../api/roblox.js"
+import obj from "../modules/objects.js"
+import { perathaxToBody } from "../modules/perathax.js"
+// TEMPORARY
+import productIdList from "../modules/productIds.js"
+
+let snipeCache = {}
+const minPercent = 45
+const maxPercent = 70
+
+async function getSnipes() {
+    const filteredPera = obj.PerathaxList
+        .filter(elem => obj.ItemsList[elem.id].value)
+        .slice(0, 10)
+
+    const itemResp = await rbx.market.getBatchInfo(
+        perathaxToBody(filteredPera)
+    )
+
+    const promiseArray = []
+
+    for (const item of itemResp.data) {
+        const oldPrice = snipeCache[item.id]
+        const value = obj.ItemsList[item.id].defaultValue
+        const dealPercent = Math.round((1 - (item.lowestPrice / value)) * 100)
+
+        if ((oldPrice != item.lowestPrice) &&
+             dealPercent >= minPercent && 
+             dealPercent <= maxPercent) {
+                const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
+                console.log(`${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${dealPercent}% \x1b[0m`)
+                
+                promiseArray.push(dirtyWork(item))
+
+                
+        }
+        snipeCache[item.id] = item.lowestPrice
+    }
+
+    await Promise.all(promiseArray)
+}
+
+async function dirtyWork(item) {
+    const resellers = await rbx.market.getResellers(item.id)
+    const lowest = resellers[1]
+    const productId = productIdList[item.id].productID
+
+    const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
+    console.log(res)
+}
+
+async function checkIfProjected(assetId, override) {
+
+    if (override) {
+        return false
+    }
+
+    const resaleData = await rbx.request(`https://economy.roblox.com/v1/assets/${assetId}/resale-data`)
+        .then(resp => resp.json())
+    
+    const trueRap = resaleData.recentAveragePrice
+    const pricePoints = resaleData.priceDataPoints
+        .map(x=>x.value)
+        .sort((a,b) => a-b)
+    
+    if (pricePoints.length > 2) {
+        const highestSale = pricePoints.slice(-1)[0]
+        const low = Math.round(pricePoints.length * 0.1);
+        const high = pricePoints.length - low;
+        const data2 = pricePoints.slice(low,high);
+
+        const truncRap = Math.floor(
+          (data2.reduce((a,b)=>a+b)/data2.length)+0.5)
+        
+        
+        if (trueRap / truncRap > 1.4 || trueRap > 2*highestSale) {
+            return true
+        } else {
+            return false
+        }
+    
+    } else {
+        return false
+    }
+}
+
+export default getSnipes
+
 /*
 //the fuck is it Handle Message, I Want To Have More Messages????
 async function handleDealsMessage(request) {
