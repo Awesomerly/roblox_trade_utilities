@@ -16,8 +16,8 @@ async function doOnce() {
 async function routine() {
     await doOnce()
 
-    let robux = await rbx.self.getRobux()
-    obj.MyInfo.robux = robux
+    let myRobux = await rbx.self.getRobux()
+    obj.MyInfo.robux = myRobux
 }
 
 export default routine
