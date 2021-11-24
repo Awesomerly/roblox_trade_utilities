@@ -71,7 +71,8 @@ export async function getItems() {
     let formattedInfo = Object.fromEntries(Object.entries(resp.items).map(([assetId, assetArr]) => {
         let assetInfo = {
             "name": assetArr[0],
-            "rap": assetArr[2]
+            "rap": assetArr[2],
+            "defaultValue": assetArr[4]
         }
 
         if (assetArr[1].length > 0)
