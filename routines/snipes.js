@@ -34,7 +34,9 @@ async function getSnipes() {
             }
         }
 
+        if (item.lowestPrice) {
         snipeCache[item.id] = item.lowestPrice
+        }
     }
 
     await Promise.all(promiseArray)
