@@ -12,8 +12,8 @@ export async function getBatchInfo(list) {
     return await resp.json()
 }
 
-export async function getResellers(id) {
-    return await rbx.request(`https://economy.roblox.com/v1/assets/${id}/resale-data`)
+export async function getSalesHistory(id) {
+    return await request(`https://economy.roblox.com/v1/assets/${id}/resale-data`)
         .then(resp => resp.json())
 }
 
