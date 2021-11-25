@@ -12,7 +12,7 @@ const maxPercent = 70
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
         .filter(elem => obj.ItemsList[elem.id].value)
-        .slice(0, 100)
+        .slice(0, 50)
 
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
@@ -21,7 +21,7 @@ async function getSnipes() {
     const date = new Date()
 
     const promiseArray = []
-    
+
     for (const item of itemResp.data) {
         const oldPrice = snipeCache[item.id]
         if (oldPrice != item.lowestPrice) {
@@ -29,11 +29,11 @@ async function getSnipes() {
             const dealPercent = Math.round((1 - (item.lowestPrice / value)) * 100)
 
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
-            if (cached) {
+            if (cached && dealPercent > 0) {
                 console.log(`${date.toLocaleTimeString('it-IT')} ${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${dealPercent}% \x1b[0m`)
             }
-    
-            if (dealPercent >= minPercent && 
+
+            if (dealPercent >= minPercent &&
                 dealPercent <= maxPercent) {
                    promiseArray.push(dirtyWork(item))
             }
@@ -63,7 +63,7 @@ export default getSnipes
 /*
 //the fuck is it Handle Message, I Want To Have More Messages????
 async function handleDealsMessage(request) {
-    
+
     // request format: (needs name field (sike no it doesn't billa bots the entire thing))
     // {
     //     'assetId': assetId,
@@ -75,14 +75,14 @@ async function handleDealsMessage(request) {
     const isValued = request.isValued
     const product = Catalog.productIdList[`${assetId}`]
     const productId = product['productID']
-    
+
     const isProjected = await checkIfProjected(assetId, isValued)
     // console.log(`AssetId: ${request.assetId}`)
     // console.log(`Projected: ${isProjected}`)
     // console.log(`Valued: ${isValued}`)
-    
+
     if (isProjected == false || isValued) {
-    
+
         const sellerPromise = fetch(`https://economy.roblox.com/v1/assets/${assetId}/resellers?cursor=&limit=10`)
             .then(res => res.json())
             .then(json => {
@@ -90,9 +90,9 @@ async function handleDealsMessage(request) {
                 const expectedPrice = request.expectedPrice
                 const userAssetId = lowestSeller.userAssetId
                 const sellerId = lowestSeller.seller.id
-                
+
                 const buyUrl = 'https://economy.roblox.com/v1/purchases/products/' + productId
-                
+
                 const infoTable = {
                     expectedCurrency: 1,
                     expectedPrice: expectedPrice,
@@ -101,18 +101,18 @@ async function handleDealsMessage(request) {
                 }
                 return [infoTable, buyUrl]
             })
-        
+
         const [lowSellerData, csrfToken] = await Promise.all([sellerPromise, CurrentPlayer.getCsrf()])
-        
+
         const purchase = await purchaseItem(lowSellerData, csrfToken)
-        
+
         //make the below a little bit more complete.
-        
+
         if (purchase.purchased == true) {
             console.log('purchased')
             chrome.notifications.create('roliextension-deals', {
                 'type': 'basic',
-                'title': `You bought ${purchase.assetName}`, 
+                'title': `You bought ${purchase.assetName}`,
                 'message': `R\$${lowSellerData[0].expectedPrice}`
             })
             sendPurchaseWebhook({
@@ -125,24 +125,24 @@ async function handleDealsMessage(request) {
             console.log('Purchase Error')
             chrome.notifications.create('roliextension-deals', {
                 'type': 'basic',
-                'title': 'Didn\'t get it.', 
+                'title': 'Didn\'t get it.',
                 'message': 'welp'
             })
         }
-        
-        
+
+
         return purchase
-        
+
     } else {
         console.log('Not Purchased')
         chrome.notifications.create('roliextension-deals', {
             'type': 'basic',
-            'title': 'bad item', 
+            'title': 'bad item',
             'message': 'welp'
         })
     }
 }
-    
+
 
 
 async function purchaseItem(purchaseData, csrf) {
@@ -155,7 +155,7 @@ async function purchaseItem(purchaseData, csrf) {
         },
         body: JSON.stringify(purchaseData[0])
     }).then(res => res.json())
-    
+
     return purchase
 }
 
@@ -167,12 +167,12 @@ async function checkIfProjected(assetId, override) {
 
     const resaleData = await fetch(`https://economy.roblox.com/v1/assets/${assetId}/resale-data`)
         .then(resp => resp.json())
-    
+
     const trueRap = resaleData.recentAveragePrice
     const pricePoints = resaleData.priceDataPoints
         .map(x=>x.value)
         .sort((a,b) => a-b)
-    
+
     if (pricePoints.length > 2) {
         const highestSale = pricePoints.slice(-1)[0]
         const low = Math.round(pricePoints.length * 0.1);
@@ -181,14 +181,14 @@ async function checkIfProjected(assetId, override) {
 
         const truncRap = Math.floor(
           (data2.reduce((a,b)=>a+b)/data2.length)+0.5)
-        
-        
+
+
         if (trueRap / truncRap > 1.4 || trueRap > 2*highestSale) {
             return true
         } else {
             return false
         }
-    
+
     } else {
         return false
     }
@@ -214,7 +214,7 @@ async function sendPurchaseWebhook(purchaseData) {
         }
       ]
     }
-    
+
     fetch(webhookUrl, {
         method: 'POST',
         headers: {
