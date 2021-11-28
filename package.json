@@ -4,7 +4,7 @@
   "description": "how 2 get t3h mon3yz",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "pm2 start index.js --node-args='--unhandled-rejections=strict'"
   },
   "author": "Awesomerly",
   "license": "ISC",
