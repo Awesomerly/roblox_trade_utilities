@@ -18,6 +18,8 @@ async function routine() {
 
     let myRobux = await rbx.self.getRobux()
     obj.MyInfo.robux = myRobux
+
+    await rbx.refreshCsrf()
 }
 
 export default routine
