@@ -11,8 +11,8 @@ const maxPercent = 70
 
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
-        .filter(elem => obj.ItemsList[elem.id].value)
-        .slice(0, 50)
+//        .filter(elem => obj.ItemsList[elem.id].value)
+        .slice(20, 120)
 
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
@@ -35,7 +35,9 @@ async function getSnipes() {
 
             if (dealPercent >= minPercent &&
                 dealPercent <= maxPercent) {
-                   promiseArray.push(dirtyWork(item))
+                    const projStatus = await checkIfProjected(item.id)
+                    console.log(item.name, projStatus)
+                    if (!projStatus) promiseArray.push(dirtyWork(item))
             }
         }
 
@@ -56,6 +58,41 @@ async function dirtyWork(item) {
 
     const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
     console.log(res)
+}
+
+async function checkIfProjected(assetId) {
+
+    if (obj.ItemsList[assetId].value) {
+        return false
+    }
+
+    const resaleData = await rbx.request(`https://economy.roblox.com/v1/assets/${assetId}/resale-data`)
+        .then(resp => resp.json())
+
+    const trueRap = resaleData.recentAveragePrice
+    const pricePoints = resaleData.priceDataPoints
+        .map(x=>x.value)
+        .sort((a,b) => a-b)
+
+    if (pricePoints.length > 2) {
+        const highestSale = pricePoints.slice(-1)[0]
+        const low = Math.round(pricePoints.length * 0.1);
+        const high = pricePoints.length - low;
+        const data2 = pricePoints.slice(low,high);
+
+        const truncRap = Math.floor(
+          (data2.reduce((a,b)=>a+b)/data2.length)+0.5)
+
+
+        if (trueRap / truncRap > 1.4 || trueRap > 2*highestSale) {
+            return true
+        } else {
+            return false
+        }
+
+    } else {
+        return false
+    }
 }
 
 export default getSnipes
@@ -141,22 +178,6 @@ async function handleDealsMessage(request) {
             'message': 'welp'
         })
     }
-}
-
-
-
-async function purchaseItem(purchaseData, csrf) {
-
-    const purchase = await fetch(purchaseData[1], {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf
-        },
-        body: JSON.stringify(purchaseData[0])
-    }).then(res => res.json())
-
-    return purchase
 }
 
 async function checkIfProjected(assetId, override) {
