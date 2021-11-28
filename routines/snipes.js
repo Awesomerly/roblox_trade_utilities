@@ -26,11 +26,11 @@ async function getSnipes() {
         const oldPrice = snipeCache[item.id]
         if (oldPrice != item.lowestPrice) {
             const value = obj.ItemsList[item.id].defaultValue
-            const dealPercent = Math.round((1 - (item.lowestPrice / value)) * 100)
+            const dealPercent = (1 - (item.lowestPrice / value)) * 100
 
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
             if (cached && dealPercent > 0) {
-                console.log(`${date.toLocaleTimeString('it-IT')} ${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${dealPercent}% \x1b[0m`)
+                console.log(`${date.toLocaleTimeString('it-IT')} ${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
             }
 
             if (dealPercent >= minPercent &&
