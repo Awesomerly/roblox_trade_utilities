@@ -8,6 +8,7 @@ let snipeCache = {}
 let cached = false
 const minPercent = 40
 const maxPercent = 70
+const displayPercent = 20
 
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
@@ -29,7 +30,7 @@ async function getSnipes() {
             const dealPercent = (1 - (item.lowestPrice / value)) * 100
 
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
-            if (cached && dealPercent > 0) {
+            if (cached && dealPercent > displayPercent) {
                 console.log(`${date.toLocaleTimeString('it-IT')} ${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
             }
 
