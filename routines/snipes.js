@@ -1,5 +1,6 @@
 import * as rbx from "../api/roblox.js"
 import obj from "../modules/objects.js"
+import { sleep } from "../modules/utils.js"
 import { perathaxToBody } from "../modules/perathax.js"
 // TEMPORARY
 import productIdList from "../modules/productIds.js"
@@ -18,6 +19,13 @@ async function getSnipes() {
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
     )
+    
+    if (itemResp.errors) {
+	console.log(itemResp)
+        console.log("Too Many Snipe Requests. Taking a break")
+	await sleep(10000)
+	return
+    }
 
     const date = new Date()
 
