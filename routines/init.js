@@ -16,7 +16,7 @@ async function startEverything() {
         await start(playerInfoRoutine, 60)
         await start(roliRoutine, 20)
         await start(getSnipes, 0.79)
-        await start(declineBots, 60 * 5)
+        await start(declineBots, 60 * 2)
 }
 
 export default startEverything
