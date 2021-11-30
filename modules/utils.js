@@ -27,3 +27,10 @@ export function sleep(ms) {
 export function randomIndex(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
+
+export function timeLog(string) {
+    const date = new Date()
+    const curTime = date.toLocaleTimeString('it-IT')
+
+    console.log(`[${curTime}] ` + string)
+}
