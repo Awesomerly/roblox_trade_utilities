@@ -62,7 +62,7 @@ async function getSnipes() {
 
 async function dirtyWork(item) {
     const resellers = await rbx.market.getResellers(item.id)
-    const lowest = resellers[1]
+    const lowest = resellers[0]
     const productId = productIdList[item.id].productID
 
     const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
