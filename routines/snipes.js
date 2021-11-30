@@ -1,6 +1,6 @@
 import * as rbx from "../api/roblox.js"
 import obj from "../modules/objects.js"
-import { sleep } from "../modules/utils.js"
+import { sleep, timeLog } from "../modules/utils.js"
 import { perathaxToBody } from "../modules/perathax.js"
 // TEMPORARY
 import productIdList from "../modules/productIds.js"
@@ -29,6 +29,7 @@ async function getSnipes() {
     }
 
     const date = new Date()
+    const curTime = date.toLocaleTimeString('it-IT')
 
     const promiseArray = []
 
@@ -40,7 +41,7 @@ async function getSnipes() {
 
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
             if (cached && dealPercent > displayPercent) {
-                console.log(`${date.toLocaleTimeString('it-IT')} ${item.name}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
+                timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
             }
 
             if (dealPercent >= minPercent &&

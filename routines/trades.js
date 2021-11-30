@@ -1,5 +1,5 @@
 import { fetch } from "fetch-h2"
-import { sleep } from "../modules/utils.js"
+import { sleep, timeLog } from "../modules/utils.js"
 import * as rbx from "../api/roblox.js"
 
 async function getBotList() {
@@ -23,7 +23,7 @@ async function declineBots() {
         }
     }
 
-    console.log(`${declinedCount} trades declined.`)
+    timeLog(`${declinedCount} trades declined.`)
 }
 
 export default declineBots
