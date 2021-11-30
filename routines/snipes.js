@@ -8,24 +8,24 @@ import productIdList from "../modules/productIds.js"
 let snipeCache = {}
 let projCache = {}
 let cached = false
-const minPercent = 40
+const minPercent = 38 
 const maxPercent = 70
-const displayPercent = 20
+const displayPercent = 0
 
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
 //        .filter(elem => obj.ItemsList[elem.id].value)
-        .slice(20, 120)
+        .slice(0, 100)
 
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
     )
     
     if (itemResp.errors) {
-	console.log(itemResp)
+        console.log(itemResp)
         console.log("Too Many Snipe Requests. Taking a break")
-	await sleep(10000)
-	return
+        await sleep(10000)
+        return
     }
 
     const date = new Date()
@@ -114,7 +114,9 @@ async function checkIfProjected(assetId) {
             }
             return true
         } else {
-            projCache[assetId].status = false
+            projCache[assetId] = {
+                status: false
+            }
             return false
         }
 
