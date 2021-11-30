@@ -44,9 +44,7 @@ async function getSnipes() {
 
             if (dealPercent >= minPercent &&
                 dealPercent <= maxPercent) {
-                    const projStatus = await checkIfProjected(item.id)
-                    console.log(item.name, projStatus)
-                    if (!projStatus) promiseArray.push(dirtyWork(item))
+                    promiseArray.push(dirtyWork(item))
             }
         }
 
@@ -61,6 +59,10 @@ async function getSnipes() {
 }
 
 async function dirtyWork(item) {
+    const projStatus = await checkIfProjected(item.id)
+    console.log(obj.ItemsList[item.id].name, projStatus)
+    if (projStatus) return
+    
     const resellers = await rbx.market.getResellers(item.id)
     const lowest = resellers[0]
     const productId = productIdList[item.id].productID
