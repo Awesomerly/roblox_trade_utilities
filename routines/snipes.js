@@ -6,6 +6,7 @@ import { perathaxToBody } from "../modules/perathax.js"
 import productIdList from "../modules/productIds.js"
 
 let snipeCache = {}
+let projCache = {}
 let cached = false
 const minPercent = 40
 const maxPercent = 70
@@ -77,6 +78,17 @@ async function checkIfProjected(assetId) {
         return false
     }
 
+    if (projCache[assetId] && projCache[assetId].status == true) {
+        if (obj.ItemsList[assetId].rap / projCache[assetId].rap > 1.4) {
+            return true
+        } else {
+            projCache[assetId].status = false
+            delete projCache[assetId].rap
+            return false
+        }
+
+    }
+
     const resaleData = await rbx.request(`https://economy.roblox.com/v1/assets/${assetId}/resale-data`)
         .then(resp => resp.json())
 
@@ -96,8 +108,13 @@ async function checkIfProjected(assetId) {
 
 
         if (trueRap / truncRap > 1.4 || trueRap > 2*highestSale) {
+            projCache[assetId] = {
+                status: true,
+                rap: truncRap
+            }
             return true
         } else {
+            projCache[assetId].status = false
             return false
         }
 
