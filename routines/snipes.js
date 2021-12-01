@@ -1,5 +1,6 @@
 import * as rbx from "../api/roblox.js"
 import obj from "../modules/objects.js"
+import config from "../config.js"
 import { sleep, timeLog } from "../modules/utils.js"
 import { perathaxToBody } from "../modules/perathax.js"
 // TEMPORARY
@@ -8,14 +9,17 @@ import productIdList from "../modules/productIds.js"
 let snipeCache = {}
 let projCache = {}
 let cached = false
-const minPercent = 38 
-const maxPercent = 70
-const displayPercent = 0
+
+const minPercent = config.snipes.minPercent 
+const maxPercent = config.snipes.maxPercent
+const displayPercent = config.snipes.displayPercent
 
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
-//        .filter(elem => obj.ItemsList[elem.id].value)
-        .slice(0, 100)
+        .filter(elem => {
+            return config.snipes.snipeRap || obj.ItemsList[elem.id].value
+        })
+        .slice(...config.snipes.peraRange)
 
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
@@ -208,41 +212,6 @@ async function handleDealsMessage(request) {
             'title': 'bad item',
             'message': 'welp'
         })
-    }
-}
-
-async function checkIfProjected(assetId, override) {
-
-    if (override){
-        return false
-    }
-
-    const resaleData = await fetch(`https://economy.roblox.com/v1/assets/${assetId}/resale-data`)
-        .then(resp => resp.json())
-
-    const trueRap = resaleData.recentAveragePrice
-    const pricePoints = resaleData.priceDataPoints
-        .map(x=>x.value)
-        .sort((a,b) => a-b)
-
-    if (pricePoints.length > 2) {
-        const highestSale = pricePoints.slice(-1)[0]
-        const low = Math.round(pricePoints.length * 0.1);
-        const high = pricePoints.length - low;
-        const data2 = pricePoints.slice(low,high);
-
-        const truncRap = Math.floor(
-          (data2.reduce((a,b)=>a+b)/data2.length)+0.5)
-
-
-        if (trueRap / truncRap > 1.4 || trueRap > 2*highestSale) {
-            return true
-        } else {
-            return false
-        }
-
-    } else {
-        return false
     }
 }
 
