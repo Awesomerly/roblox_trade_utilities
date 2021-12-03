@@ -32,9 +32,6 @@ async function getSnipes() {
         return
     }
 
-    const date = new Date()
-    const curTime = date.toLocaleTimeString('it-IT')
-
     const promiseArray = []
 
     for (const item of itemResp.data) {
