@@ -1,6 +1,8 @@
 const config = 
 {
     snipes: {
+        enabled: true,
+
         minPercent: 40,
         maxPercent: 70,
         // min percentage for price change to be logged
@@ -12,7 +14,6 @@ const config =
         // range of items from perathax to send:
         peraRange: [ 50, 150 ]
     }
-
 }
 
 export default config
