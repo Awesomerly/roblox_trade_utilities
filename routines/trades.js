@@ -22,8 +22,9 @@ async function declineBots() {
             continue
         }
     }
-
-    timeLog(`${declinedCount} trades declined.`)
+    if (declinedCount > 0) {
+        timeLog(`${declinedCount} trades declined.`)
+    }
 }
 
 export default declineBots
