@@ -50,7 +50,18 @@ export async function purchaseItem(productId, price, sellerId, userAssetId) {
     
     return purchase
 }
-
+/*
+{
+    "userAssetId":28605,
+    "serialNumber":null,
+    "assetId":1028606,
+    "name":"Red Baseball Cap",
+    "recentAveragePrice":1768,
+    "originalPrice":null,
+    "assetStock":null,
+    "buildersClubMembershipType":0
+}
+*/
 export async function getPlayerInventory(id) {
     return await paginate(
         `https://inventory.roblox.com/v1/users/${id}/assets/collectibles?sortOrder=Asc&limit=100`
