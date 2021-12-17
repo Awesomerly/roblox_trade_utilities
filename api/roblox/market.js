@@ -67,3 +67,33 @@ export async function getPlayerInventory(id) {
         `https://inventory.roblox.com/v1/users/${id}/assets/collectibles?sortOrder=Asc&limit=100`
     )
 }
+
+export async function sellItem(assetId, uaid, price) {
+    const url = "https://www.roblox.com/asset/toggle-sale"
+    const body = {
+        assetId: assetId,
+        userAssetId: uaid,
+        price: price,
+        sell: true
+    }
+
+    return await request(url, {
+        method: "POST",
+        body: JSON.stringify(body)
+    })
+}
+
+export async function unsellItem(assetId, uaid) {
+    const url = "https://www.roblox.com/asset/toggle-sale"
+    const body = {
+        assetId: assetId,
+        userAssetId: uaid,
+        price: 0,
+        sell: false
+    }
+
+    return await request(url, {
+        method: "POST",
+        body: JSON.stringify(body)
+    })
+}
