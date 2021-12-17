@@ -5,6 +5,7 @@ import playerInfoRoutine from './playerInfo.js'
 import roliRoutine from './rolimons.js'
 import getSnipes from './snipes.js'
 import declineBots from './trades.js'
+import sell from './selling.js'
 
 async function start(fn, sec) {
     await fn()
@@ -19,7 +20,9 @@ async function startEverything() {
         if (cfg.snipes.enabled == true) {
             await start(getSnipes, 0.79)
         }
-        await start(declineBots, 60 * 2)
+
+        start(declineBots, 120)
+        start(sell, 600)
 }
 
 export default startEverything
