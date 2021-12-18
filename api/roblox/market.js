@@ -78,9 +78,9 @@ export async function sellItem(assetId, uaid, price) {
     }
 
     return await request(url, {
-        method: "POST",
-        body: JSON.stringify(body)
-    })
+        method: 'POST',
+        json: body
+    }).then(res => res.json())
 }
 
 export async function unsellItem(assetId, uaid) {
@@ -93,7 +93,7 @@ export async function unsellItem(assetId, uaid) {
     }
 
     return await request(url, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(body)
-    })
+    }).then(res => res.json())
 }
