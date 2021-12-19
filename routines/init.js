@@ -17,12 +17,11 @@ async function start(fn, sec) {
 async function startEverything() {
         await start(playerInfoRoutine, 60)
         await start(roliRoutine, 20)
-        if (cfg.snipes.enabled == true) {
-            await start(getSnipes, 0.79)
-        }
 
+        if (cfg.snipes.enabled) await start(getSnipes, 0.79)
+        if (cfg.priceWar.enabled) start(sell, 600)
+        
         start(declineBots, 120)
-        start(sell, 600)
 }
 
 export default startEverything
