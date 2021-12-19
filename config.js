@@ -1,5 +1,9 @@
 const config = 
 {
+    selling: {
+        enabled: true,
+    },
+
     snipes: {
         enabled: true,
 
