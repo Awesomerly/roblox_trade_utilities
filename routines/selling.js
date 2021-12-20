@@ -39,8 +39,7 @@ async function selling() {
         // when you are the top seller, you wanna check the second best 
         if (topResale.seller.id == obj.MyInfo.id) {
             // if it is barely above ur current price nothing else needs to be done
-            if (topResale.price - resellers[1].price <= 1) continue
-
+            if (resellers[1].price - topResale.price <= 1) continue
             desiredPrice = resellers[1].price - 1
         } else {
             const rap = item.recentAveragePrice
