@@ -42,10 +42,9 @@ async function selling() {
             if (resellers[1].price - topResale.price <= 1) continue
             desiredPrice = resellers[1].price - 1
         } else {
-            const rap = item.recentAveragePrice
             // if the best price is low or troll, don't try to pricewar it
-            if (topResale.price < (rap * 1.07) ||
-                topResale.price > (rap * 5)) {
+            if (topResale.price < (defaultItemVal * 1.07) ||
+                topResale.price > (defaultItemVal * 5)) {
                     continue
             }
         }
