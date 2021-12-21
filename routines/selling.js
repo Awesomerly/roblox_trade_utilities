@@ -1,5 +1,6 @@
 import { timeLog, sleep } from '../modules/utils.js'
 import obj from '../modules/objects.js'
+import config from '../config.js'
 import * as rbx from '../api/roblox.js'
 import productIdList from "../modules/productIds.js"
 
@@ -15,10 +16,18 @@ import productIdList from "../modules/productIds.js"
     "buildersClubMembershipType":0
 }
 */
+
+const sellCfg = config.selling
+const itemKeeps = config.items.keep
+
 async function selling() {
     let myInv = await rbx.market.getPlayerInventory(obj.MyInfo.id)
     myInv = myInv
-        .filter(item => item.recentAveragePrice < 3000)
+//        .filter(item => item.recentAveragePrice < 3000)
+            .filter(item => !(obj.ItemsList[item.assetId].value)) // Filter out valueds
+            .filter(item => !(itemKeeps.serials.includes(item.serialNumber)))
+            .filter(item => !(itemKeeps.assetIds.includes(item.assetId)))
+            .filter(item => !(itemKeeps.uaids.includes(item.userAssetId)))
 
     for (const item of myInv) {
         // TODO: get updated product id list from cosmo
@@ -43,8 +52,8 @@ async function selling() {
             desiredPrice = resellers[1].price - 1
         } else {
             // if the best price is low or troll, don't try to pricewar it
-            if (topResale.price < (defaultItemVal * 1.07) ||
-                topResale.price > (defaultItemVal * 5)) {
+            if (topResale.price < (defaultItemVal * sellCfg.threshold.min) ||
+                topResale.price > (defaultItemVal * sellCfg.threshold.max)) {
                     continue
             }
         }
