@@ -61,7 +61,7 @@ async function selling() {
         const resp = await rbx.market.sellItem(item.assetId, item.userAssetId, desiredPrice)
 
         if (resp.isValid == true) {
-            timeLog(`Selling ${item.name} for ${desiredPrice}, rap ${defaultItemVal}`)
+            timeLog(`Selling ${item.name.trim()} for ${desiredPrice}, rap ${defaultItemVal}`)
         }
     }
 }
