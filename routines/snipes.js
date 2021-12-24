@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 import * as rbx from "../api/roblox.js"
 import obj from "../modules/objects.js"
 import config from "../config.js"
@@ -62,8 +63,9 @@ async function getSnipes() {
 }
 
 async function dirtyWork(item) {
+    const itemInfo = obj.ItemsList[item.id]
     const projStatus = await checkIfProjected(item.id)
-    console.log(obj.ItemsList[item.id].name, projStatus)
+    console.log(itemInfo.name, projStatus)
     if (projStatus) return
     
     const resellers = await rbx.market.getResellers(item.id)
@@ -71,11 +73,24 @@ async function dirtyWork(item) {
     const productId = productIdList[item.id].productID
 
     const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
+
+    if (res.purchased == true) {
+
+        const webhookItem = {
+            name: itemInfo.name,
+            rap: itemInfo.rap,
+            value: itemInfo.defaultValue,
+            dealPercent: (1 - (item.lowestPrice / itemInfo.defaultValue)) * 100,
+            assetId: item.id,
+        }
+
+        await sendPurchaseWebhook(webhookItem, lowest)
+
+    }
     console.log(res)
 }
 
 async function checkIfProjected(assetId) {
-
     if (obj.ItemsList[assetId].value) {
         return false
     }
@@ -127,111 +142,79 @@ async function checkIfProjected(assetId) {
     }
 }
 
-export default getSnipes
-
 /*
-//the fuck is it Handle Message, I Want To Have More Messages????
-async function handleDealsMessage(request) {
-
-    // request format: (needs name field (sike no it doesn't billa bots the entire thing))
-    // {
-    //     'assetId': assetId,
-    //     'expectedPrice': expectedPrice,
-    //     'isValued': isValued
-    // }
-
-    const assetId = request.assetId
-    const isValued = request.isValued
-    const product = Catalog.productIdList[`${assetId}`]
-    const productId = product['productID']
-
-    const isProjected = await checkIfProjected(assetId, isValued)
-    // console.log(`AssetId: ${request.assetId}`)
-    // console.log(`Projected: ${isProjected}`)
-    // console.log(`Valued: ${isValued}`)
-
-    if (isProjected == false || isValued) {
-
-        const sellerPromise = fetch(`https://economy.roblox.com/v1/assets/${assetId}/resellers?cursor=&limit=10`)
-            .then(res => res.json())
-            .then(json => {
-                const lowestSeller = json.data[0]
-                const expectedPrice = request.expectedPrice
-                const userAssetId = lowestSeller.userAssetId
-                const sellerId = lowestSeller.seller.id
-
-                const buyUrl = 'https://economy.roblox.com/v1/purchases/products/' + productId
-
-                const infoTable = {
-                    expectedCurrency: 1,
-                    expectedPrice: expectedPrice,
-                    expectedSellerId: sellerId,
-                    userAssetId: userAssetId
-                }
-                return [infoTable, buyUrl]
-            })
-
-        const [lowSellerData, csrfToken] = await Promise.all([sellerPromise, CurrentPlayer.getCsrf()])
-
-        const purchase = await purchaseItem(lowSellerData, csrfToken)
-
-        //make the below a little bit more complete.
-
-        if (purchase.purchased == true) {
-            console.log('purchased')
-            chrome.notifications.create('roliextension-deals', {
-                'type': 'basic',
-                'title': `You bought ${purchase.assetName}`,
-                'message': `R\$${lowSellerData[0].expectedPrice}`
-            })
-            sendPurchaseWebhook({
-                price: lowSellerData[0].expectedPrice,
-                sellerName: purchase.sellerName,
-                assetName: purchase.assetName,
-                assetId: purchase.assetId,
-            })
-        } else {
-            console.log('Purchase Error')
-            chrome.notifications.create('roliextension-deals', {
-                'type': 'basic',
-                'title': 'Didn\'t get it.',
-                'message': 'welp'
-            })
-        }
-
-
-        return purchase
-
-    } else {
-        console.log('Not Purchased')
-        chrome.notifications.create('roliextension-deals', {
-            'type': 'basic',
-            'title': 'bad item',
-            'message': 'welp'
-        })
+{
+    item: {
+        name
+        rap
+        value
+        dealPercent
+        assetId
+    }
+    listing: {
+        "userAssetId":452981782,
+        "seller": {
+            "id":453246493,
+            "type":"User",
+            "name":"unknownrealities"
+        },
+        "price":92887,
+        "serialNumber":null
     }
 }
-
-//Add some more data points to this right here webhook
-//price, sellerName, assetName, assetId
-async function sendPurchaseWebhook(purchaseData) {
-    const date = new Date()
-    const timestamp = date.toISOString()
+*/
+async function sendPurchaseWebhook(item, listing) {  
     const webhookUrl = 'https://discordapp.com/api/webhooks/713541799712653334/uAVtxdSAnRnvFlUDoN2d7QAiwKRQQ0qJ_SgyYIMMP0cNuP3cV7NMUfZJWwMVxG5emFEy'
+    const thumbUrl = `https://www.roblox.com/asset-thumbnail/image?assetId=${item.assetId}&width=720&height=720&format=png`
+    const itemUrl = `https://www.roblox.com/catalog/${item.assetId}/unnamed`
+    const profileUrl = `https://www.roblox.com/users/${listing.seller.id}/profile`
+
+    const sellerName = `[${listing.seller.name}](${profileUrl})`
+    const title = `${item.name.trim()} was bought for ${listing.price} ROBUX`
+
     const formData = {
-      "embeds": [
-        {
-          "title": `${purchaseData.assetName}`,
-          "description": `Bought for R\$${purchaseData.price}\nSeller: ${purchaseData.sellerName}`,
-          "url": `https://www.roblox.com/catalog/${purchaseData.assetId}/unnamed`,
-          "color": 7506394,
-          "timestamp": timestamp,
-          "thumbnail": {
-            "url": `https://www.roblox.com/asset-thumbnail/image?assetId=${purchaseData.assetId}&width=420&height=420&format=png`
-          }
-        }
-      ]
+        "content": null,
+        "embeds": [
+            {
+                "title": title,
+                "url": itemUrl,
+                "color": 13184044,
+                "fields": [
+                    {
+                        "name": "RAP",
+                        "value": String(item.rap),
+                        "inline": true
+                    },
+                    {
+                        "name": "Percent",
+                        "value": String(Math.round(item.dealPercent)) + '%',
+                        "inline": true
+                    },
+                    {
+                        "name": "Seller",
+                        "value": sellerName
+                    },
+                    {
+                        "name": "UAID",
+                        "value": String(listing.userAssetId),
+                        "inline": true
+                    }
+                ],
+                "thumbnail": {
+                    "url": thumbUrl
+                }
+            }
+        ]
     }
+    
+    if (item.value != item.rap) {
+        formData.embeds[0].fields.splice(1, 0, {
+            "name": "Value",
+            "value": String(item.value),
+            "inline": true
+        })
+    }
+    
 
     fetch(webhookUrl, {
         method: 'POST',
@@ -242,6 +225,4 @@ async function sendPurchaseWebhook(purchaseData) {
     })
 }
 
-
-chrome.runtime.onMessage.addListener(handleDealsMessage)
-*/
+export default getSnipes
