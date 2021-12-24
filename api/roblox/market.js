@@ -94,6 +94,6 @@ export async function unsellItem(assetId, uaid) {
 
     return await request(url, {
         method: 'POST',
-        body: JSON.stringify(body)
+        json: body
     }).then(res => res.json())
 }
