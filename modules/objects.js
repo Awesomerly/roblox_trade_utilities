@@ -12,7 +12,9 @@ const info = {
     // TODO: add a comment stating what can be in here
     ItemsList: {},
 
-    PerathaxList: []
+    PerathaxList: [],
+
+    ProductIdList: {}
 }
 
 export default info

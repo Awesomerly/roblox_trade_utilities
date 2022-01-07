@@ -4,8 +4,6 @@ import obj from "../modules/objects.js"
 import config from "../config.js"
 import { sleep, timeLog } from "../modules/utils.js"
 import { perathaxToBody } from "../modules/perathax.js"
-// TEMPORARY
-import productIdList from "../modules/productIds.js"
 
 let snipeCache = {}
 let projCache = {}
@@ -70,7 +68,7 @@ async function dirtyWork(item) {
     
     const resellers = await rbx.market.getResellers(item.id)
     const lowest = resellers[0]
-    const productId = productIdList[item.id].productID
+    const productId = obj.ProductIdList[item.id].productID
 
     const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
 
