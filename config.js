@@ -1,4 +1,4 @@
-const config =
+const config = 
 {
     items: {
         keep: {
@@ -42,15 +42,15 @@ const config =
         enabled: true,
 
         minPercent: 40,
-        maxPercent: 75,
+        maxPercent: 70,
         // min percentage for price change to be logged
-        displayPercent: 0,
+        displayPercent: -30,
 
         // will there be RAP items included from the request?
         snipeRap: false,
 
         // range of items from perathax to send:
-        peraRange: [ 10, 110 ]
+        peraRange: [ 0, 100 ]
     }
 }
 
