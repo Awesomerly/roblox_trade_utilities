@@ -2,7 +2,6 @@ import { timeLog, sleep } from '../modules/utils.js'
 import obj from '../modules/objects.js'
 import config from '../config.js'
 import * as rbx from '../api/roblox.js'
-import productIdList from "../modules/productIds.js"
 
 /*
 {
@@ -31,9 +30,9 @@ async function selling() {
 
     for (const item of myInv) {
         // TODO: get updated product id list from cosmo
-        let prodId = productIdList[item.assetId]
+        let prodId = obj.ProductIdList[item.assetId]
         if (prodId == undefined) {
-            //timeLog("ASSET ID ERROR")
+            timeLog("ASSET ID ERROR")
             continue
         }
         prodId = prodId.productID
