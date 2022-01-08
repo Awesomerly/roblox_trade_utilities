@@ -68,7 +68,7 @@ async function dirtyWork(item) {
     
     const resellers = await rbx.market.getResellers(item.id)
     const lowest = resellers[0]
-    const productId = obj.ProductIdList[item.id].productID
+    const productId = obj.ProductIdList[item.id].productId
 
     const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
 
