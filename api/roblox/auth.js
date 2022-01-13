@@ -1,4 +1,4 @@
-import { fetch } from "fetch-h2"
+import fetch from "node-fetch"
 let csrf = ""
 
 // TODO: enable multi cookie drifting
@@ -9,9 +9,9 @@ export async function request(url, options) {
     const response = await fetch(url, {
         headers: {
             Cookie: `.ROBLOSECURITY=${process.env.ROBLOSECURITY};`,
-            "x-csrf-token": csrf
+            "x-csrf-token": csrf,
+            'Content-Type': 'application/json'
         },
-        allowForbiddenHeaders: true,
         ...options
     });
 
