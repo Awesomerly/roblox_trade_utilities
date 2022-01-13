@@ -1,4 +1,4 @@
-import { fetch } from "fetch-h2"
+import fetch from "node-fetch"
 import { sleep, timeLog } from "../modules/utils.js"
 import * as rbx from "../api/roblox.js"
 
