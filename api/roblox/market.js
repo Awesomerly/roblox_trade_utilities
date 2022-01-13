@@ -6,7 +6,7 @@ export async function getBatchInfo(list) {
 
     let resp = await request(link, {
         method: "POST",
-        json: { items: list }
+        body: JSON.stringify({ items: list })
     })
 
     return await resp.json()
@@ -37,15 +37,15 @@ export async function getResellers(id) {
 }
 
 export async function purchaseItem(productId, price, sellerId, userAssetId) {
-
+    const body =  {
+        expectedCurrency: 1,
+        expectedPrice: price,
+        expectedSellerId: sellerId,
+        userAssetId: userAssetId
+    }
     const purchase = await request(`https://economy.roblox.com/v1/purchases/products/${productId}`, {
         method: 'POST',
-        json: {
-            expectedCurrency: 1,
-            expectedPrice: price,
-            expectedSellerId: sellerId,
-            userAssetId: userAssetId
-        }
+        body: body
     }).then(res => res.json())
     
     return purchase
@@ -79,7 +79,7 @@ export async function sellItem(assetId, uaid, price) {
 
     return await request(url, {
         method: 'POST',
-        json: body
+        body: JSON.stringify(body)
     }).then(res => res.json())
 }
 
@@ -94,6 +94,6 @@ export async function unsellItem(assetId, uaid) {
 
     return await request(url, {
         method: 'POST',
-        json: body
+        body: JSON.stringify(body)
     }).then(res => res.json())
 }
