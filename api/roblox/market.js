@@ -45,7 +45,7 @@ export async function purchaseItem(productId, price, sellerId, userAssetId) {
     }
     const purchase = await request(`https://economy.roblox.com/v1/purchases/products/${productId}`, {
         method: 'POST',
-        body: body
+        body: JSON.stringify(body)
     }).then(res => res.json())
     
     return purchase
