@@ -20,6 +20,8 @@ export async function request(url, options) {
             csrf = response.headers.get("x-csrf-token");
             return request(url, options);
         }
+    } else if (!response.ok) {
+        throw Error(response.statusText);
     }
 
     return response;
