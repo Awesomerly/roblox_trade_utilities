@@ -8,7 +8,6 @@ export async function paginate(url) {
     let getPages = async () => {
         while (nextPageCursor) {
             let resp = await request(url + `&cursor=${nextPageCursor}`)
-                .then(x => x.json())
 
             result.push(...resp.data)
             nextPageCursor = resp.nextPageCursor

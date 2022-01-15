@@ -2,19 +2,16 @@ import { request } from './auth.js'
 import { paginate } from '../../modules/utils.js'
 
 export async function getBatchInfo(list) {
-    const link = "https://catalog.roblox.com/v1/catalog/items/details"
+    const url = "https://catalog.roblox.com/v1/catalog/items/details"
 
-    let resp = await request(link, {
+    return await request(url, {
         method: "POST",
         body: JSON.stringify({ items: list })
     })
-
-    return await resp.json()
 }
 
 export async function getSalesHistory(id) {
     return await request(`https://economy.roblox.com/v1/assets/${id}/resale-data`)
-        .then(resp => resp.json())
 }
 
 /*
@@ -30,9 +27,7 @@ export async function getSalesHistory(id) {
 }
 */
 export async function getResellers(id) {
-    let resp = await request(`https://economy.roblox.com/v1/assets/${id}/resellers?cursor=&limit=10`)
-        .then(resp => resp.json())    
-    
+    let resp = await request(`https://economy.roblox.com/v1/assets/${id}/resellers?cursor=&limit=10`) 
     return resp.data
 }
 
@@ -43,12 +38,11 @@ export async function purchaseItem(productId, price, sellerId, userAssetId) {
         expectedSellerId: sellerId,
         userAssetId: userAssetId
     }
-    const purchase = await request(`https://economy.roblox.com/v1/purchases/products/${productId}`, {
+    
+    return await request(`https://economy.roblox.com/v1/purchases/products/${productId}`, {
         method: 'POST',
         body: JSON.stringify(body)
-    }).then(res => res.json())
-    
-    return purchase
+    })
 }
 /*
 {
@@ -80,7 +74,7 @@ export async function sellItem(assetId, uaid, price) {
     return await request(url, {
         method: 'POST',
         body: JSON.stringify(body)
-    }).then(res => res.json())
+    })
 }
 
 export async function unsellItem(assetId, uaid) {
@@ -95,5 +89,5 @@ export async function unsellItem(assetId, uaid) {
     return await request(url, {
         method: 'POST',
         body: JSON.stringify(body)
-    }).then(res => res.json())
+    })
 }
