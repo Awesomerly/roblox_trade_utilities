@@ -19,7 +19,8 @@ async function getSnipes() {
             return config.snipes.snipeRap || obj.ItemsList[elem.id].value
         })
         .slice(...config.snipes.peraRange)
-
+    
+    
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
     )
@@ -36,6 +37,9 @@ async function getSnipes() {
     for (const item of itemResp.data) {
         const oldPrice = snipeCache[item.id]
         if (oldPrice != item.lowestPrice) {
+            if (obj.ItemsList[item.id] == undefined) {
+                continue
+            }
             const value = obj.ItemsList[item.id].defaultValue
             const dealPercent = (1 - (item.lowestPrice / value)) * 100
 
