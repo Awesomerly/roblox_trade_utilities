@@ -13,6 +13,7 @@ const config =
                 5162497, // HT
                 319655275, // Undersmeller
                 7893468574, // Zara
+		1532388, // Gygax
             ],
             uaids: [
                 1830733382 // CTH
