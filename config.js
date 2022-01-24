@@ -43,7 +43,7 @@ const config =
         enabled: true,
 
         minPercent: 40,
-        maxPercent: 70,
+        maxPercent: 60,
         // min percentage for price change to be logged
         displayPercent: -30,
 
