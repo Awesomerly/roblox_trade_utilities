@@ -71,6 +71,10 @@ async function dirtyWork(item) {
     if (projStatus) return
     
     const resellers = await rbx.market.getResellers(item.id)
+    if (resellers.error) {
+        timeLog(resellers.error)
+        return
+    }
     const lowest = resellers[0]
     const productId = obj.ProductIdList[item.id].productId
 

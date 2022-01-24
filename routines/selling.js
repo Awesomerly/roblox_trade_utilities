@@ -38,7 +38,12 @@ async function selling() {
         prodId = prodId.productID
         
         await sleep(2000)
-        const resellers = await rbx.market.getResellers(item.assetId)
+        let resellers = await rbx.market.getResellers(item.assetId)
+        if (resellers.error != undefined) {
+            timeLog("Ratelimited on resellers api endpoint, chilling out")
+            await sleep(10000)
+            continue
+        }
         const topResale = resellers[0]
         let desiredPrice = topResale.price - 1
         
