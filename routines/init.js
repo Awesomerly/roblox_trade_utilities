@@ -24,7 +24,7 @@ async function startEverything() {
         if (cfg.snipes.enabled) await start(getSnipes, 0.78)
         if (cfg.selling.enabled) start(sell, 600)
 
-        start(declineBots, 120)
+        start(declineBots, 60)
 }
 
 export default startEverything
