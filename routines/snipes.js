@@ -112,7 +112,7 @@ async function checkIfProjected(assetId) {
 
     }
 
-    const resaleData = await rbx.request(`https://economy.roblox.com/v1/assets/${assetId}/resale-data`)
+    const resaleData = await rbx.market.getSalesHistory(assetId)
 
     const trueRap = resaleData.recentAveragePrice
     const pricePoints = resaleData.priceDataPoints
