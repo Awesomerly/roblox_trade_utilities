@@ -21,8 +21,8 @@ async function startEverything() {
 
         await start(getProdIds, 60*10)
 
-        if (cfg.snipes.enabled) await start(getSnipes, 0.78)
-        if (cfg.selling.enabled) start(sell, 600)
+        if (cfg.snipes.enabled) await start(getSnipes, 0.8)
+        if (cfg.selling.enabled) start(sell, 300)
 
         start(declineBots, 60)
 }
