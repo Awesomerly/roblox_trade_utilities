@@ -26,7 +26,7 @@ async function getSnipes() {
 	// Only take entries within peraRange
         .slice(...config.snipes.peraRange)
     
-    
+    // Get all the info from api for all the items in the filtered perathax
     const itemResp = await rbx.market.getBatchInfo(
         perathaxToBody(filteredPera)
     )
@@ -41,14 +41,17 @@ async function getSnipes() {
     const promiseArray = []
 
     for (const item of itemResp.data) {
+
+        // Why does this happen?
+        if (item == undefined) {
+            continue
+        }
         const oldPrice = snipeCache[item.id]
         if (oldPrice != item.lowestPrice) {
-            if (obj.ItemsList[item.id] == undefined) {
-                continue
-            }
             const value = obj.ItemsList[item.id].defaultValue
             const dealPercent = (1 - (item.lowestPrice / value)) * 100
 
+            // Console logging. don't freak out.
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
             if (cached && dealPercent > displayPercent) {
                 timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
@@ -60,7 +63,7 @@ async function getSnipes() {
             }
         }
 
-        if (item.lowestPrice) {
+        if (item.lowestPrice != undefined) {
             snipeCache[item.id] = item.lowestPrice
         }
     }
@@ -84,7 +87,10 @@ async function dirtyWork(item) {
     const lowest = resellers[0]
     const productId = obj.ProductIdList[item.id].productId
 
-    const res = await rbx.market.purchaseItem(productId, item.lowestPrice, lowest.seller.id, lowest.userAssetId)
+    const res = await rbx.market.purchaseItem(productId,
+                                              item.lowestPrice, 
+                                              lowest.seller.id, 
+                                              lowest.userAssetId)
 
     if (res.purchased == true) {
 
