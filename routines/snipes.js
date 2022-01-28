@@ -12,12 +12,18 @@ let cached = false
 const minPercent = config.snipes.minPercent 
 const maxPercent = config.snipes.maxPercent
 const displayPercent = config.snipes.displayPercent
+const minValue = config.snipes.minValue
+const maxValue = config.snipes.maxValue
 
 async function getSnipes() {
     const filteredPera = obj.PerathaxList
+	// Filter out rap items if snipeRap is false
         .filter(elem => {
             return config.snipes.snipeRap || obj.ItemsList[elem.id].value
         })
+        .filter(elem => obj.ItemsList[elem.id].defaultValue >= minValue &&
+                        obj.ItemsList[elem.id].defaultValue <= maxValue)
+	// Only take entries within peraRange
         .slice(...config.snipes.peraRange)
     
     

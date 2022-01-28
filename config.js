@@ -44,6 +44,11 @@ const config =
 
         minPercent: 40,
         maxPercent: 60,
+
+        // range of defaultvalues to snipe in
+        minValue: 3000,
+        maxValue: 110000,
+
         // min percentage for price change to be logged
         displayPercent: -30,
 
