@@ -85,13 +85,13 @@ async function dirtyWork(item) {
         return
     }
 
+    const lowest = resellers[0]
     // if the expected price doesn't live up to the standards, then bail.
     if (item.lowestPrice != lowest.price) {
         console.log(`FUCK, missed ${item.name} for ${item.lowestPrice}.`)
         return
     }
 
-    const lowest = resellers[0]
     console.log(`UAID is ${lowest.userAssetId}`)
 
     const productId = obj.ProductIdList[item.id].productId
