@@ -16,10 +16,11 @@ async function doOnce() {
 async function routine() {
     await doOnce()
 
-    let myRobux = await rbx.self.getRobux()
-    obj.MyInfo.robux = myRobux
-
     await rbx.refreshCsrf()
+
+    let myRobux = await rbx.self.getRobux()
+    if (myRobux.errors) return
+    obj.MyInfo.robux = myRobux
 }
 
 export default routine

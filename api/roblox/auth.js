@@ -22,7 +22,28 @@ export async function request(url, options) {
         }
     }
 
-    return response.json();
+    let respText = await response.text()
+    let returnedResp
+    try {
+        returnedResp = JSON.parse(respText)
+    } catch {
+        returnedResp = { 
+            errors: [
+                {
+                    code: response.status,
+                    message: "HTML Error"
+                }
+            ]
+        }
+    }
+
+    // yay for redundant logic :3
+    if (!response.ok && response.status != 403) {
+        console.warn(url, returnedResp.errors[0].code, returnedResp.errors[0].message)
+    }
+
+    return await returnedResp
+
 }
 
 

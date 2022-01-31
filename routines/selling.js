@@ -21,6 +21,8 @@ const itemKeeps = config.items.keep
 
 async function selling() {
     let myInv = await rbx.market.getPlayerInventory(obj.MyInfo.id)
+    if (myInv.errors) return
+    
     myInv = myInv
 //        .filter(item => item.recentAveragePrice < 3000)
             .filter(item => !(obj.ItemsList[item.assetId].value)) // Filter out valueds
@@ -38,12 +40,17 @@ async function selling() {
         prodId = prodId.productID
         
         await sleep(2000)
+
         let resellers = await rbx.market.getResellers(item.assetId)
-        if (resellers.error != undefined) {
-            timeLog("Ratelimited on resellers api endpoint, chilling out")
+        if (resellers.errors) {
+            console.warn(resellers.errors[0].message)
+            timeLog("Ratelimited on api endpoint, chilling out")
             await sleep(10000)
             continue
         }
+
+        resellers = resellers.data
+
         const topResale = resellers[0]
         let desiredPrice = topResale.price - 1
         
@@ -62,10 +69,19 @@ async function selling() {
             }
         }
 
+        // try to unlist item first
+        await rbx.market.unsellItem(item.assetId, item.userAssetId)
+        await sleep(1000)
         const resp = await rbx.market.sellItem(item.assetId, item.userAssetId, desiredPrice)
 
         if (resp.isValid == true) {
+            if (resp.data.isTwoStepVerificationRequired) {
+                timeLog("2FA is needed to sell items.")
+                return
+            }
             timeLog(`Selling ${item.name.trim()} for ${desiredPrice}, rap ${defaultItemVal}`)
+        } else if (resp.errors) {
+            timeLog(`${item.name.trim()} sale failed.`)
         }
     }
 }

@@ -12,6 +12,7 @@ async function declineBots() {
 
     const botList = await getBotList().then(resp => resp.json())
     const tradesList = await rbx.trades.getInbound()
+    if (tradesList.errors) return
 
     for (const trade of tradesList) {
         // Is Botted

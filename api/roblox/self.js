@@ -2,6 +2,9 @@ import { request } from './auth.js'
 
 export async function getRobux() {
     let response = await request('https://api.roblox.com/currency/balance')
+    if (response.errors) {
+        return response
+    }
     return response.robux
 }
 

@@ -16,61 +16,64 @@ const minValue = config.snipes.minValue
 const maxValue = config.snipes.maxValue
 
 async function getSnipes() {
-    const filteredPera = obj.PerathaxList
-	// Filter out rap items if snipeRap is false
-        .filter(elem => {
-            return config.snipes.snipeRap || obj.ItemsList[elem.id].value
-        })
-        .filter(elem => obj.ItemsList[elem.id].defaultValue >= minValue &&
-                        obj.ItemsList[elem.id].defaultValue <= maxValue)
-	// Only take entries within peraRange
-        .slice(...config.snipes.peraRange)
-    
-    // Get all the info from api for all the items in the filtered perathax
-    const itemResp = await rbx.market.getBatchInfo(
-        perathaxToBody(filteredPera)
-    )
-    
-    if (itemResp.errors) {
-        console.log(itemResp)
-        console.log("Too Many Snipe Requests. Taking a break")
-        await sleep(10000)
-        return
-    }
-
-    const promiseArray = []
-
-    for (const item of itemResp.data) {
-
-        // Why does this happen?
-        if (item == undefined) {
-            continue
+    try{
+        const filteredPera = obj.PerathaxList
+        // Filter out rap items if snipeRap is false
+            .filter(elem => {
+                return config.snipes.snipeRap || obj.ItemsList[elem.id].value
+            })
+            .filter(elem => obj.ItemsList[elem.id].defaultValue >= minValue &&
+                            obj.ItemsList[elem.id].defaultValue <= maxValue)
+        // Only take entries within peraRange
+            .slice(...config.snipes.peraRange)
+        
+        // Get all the info from api for all the items in the filtered perathax
+        const itemResp = await rbx.market.getBatchInfo(
+            perathaxToBody(filteredPera)
+        )
+        
+        if (itemResp.errors) {
+            console.log("Too Many Snipe Requests. Taking a break")
+            await sleep(10000)
+            return
         }
-        const oldPrice = snipeCache[item.id]
-        if (oldPrice != item.lowestPrice) {
-            const value = obj.ItemsList[item.id].defaultValue
-            const dealPercent = (1 - (item.lowestPrice / value)) * 100
 
-            // Console logging. don't freak out.
-            const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
-            if (cached && dealPercent > displayPercent) {
-                timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
+        const promiseArray = []
+
+        for (const item of itemResp.data) {
+
+            // Why does this happen?
+            if (item == undefined) {
+                continue
+            }
+            const oldPrice = snipeCache[item.id]
+            if (oldPrice != item.lowestPrice) {
+                const value = obj.ItemsList[item.id].defaultValue
+                const dealPercent = (1 - (item.lowestPrice / value)) * 100
+
+                // Console logging. don't freak out.
+                const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
+                if (cached && dealPercent > displayPercent) {
+                    timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
+                }
+
+                if (dealPercent >= minPercent &&
+                    dealPercent <= maxPercent) {
+                        promiseArray.push(dirtyWork(item))
+                }
             }
 
-            if (dealPercent >= minPercent &&
-                dealPercent <= maxPercent) {
-                    promiseArray.push(dirtyWork(item))
+            if (item.lowestPrice != undefined) {
+                snipeCache[item.id] = item.lowestPrice
             }
         }
 
-        if (item.lowestPrice != undefined) {
-            snipeCache[item.id] = item.lowestPrice
-        }
+        if (!cached) cached = true
+
+        await Promise.all(promiseArray)
+    } catch (error) {
+        console.log(error)
     }
-
-    if (!cached) cached = true
-
-    await Promise.all(promiseArray)
 }
 
 async function dirtyWork(item) {
@@ -79,20 +82,19 @@ async function dirtyWork(item) {
     console.log(itemInfo.name, projStatus)
     if (projStatus) return
     
-    const resellers = await rbx.market.getResellers(item.id)
-    if (resellers.error) {
-        timeLog(resellers.error)
-        return
-    }
+    let resellers = await rbx.market.getResellers(item.id)
+    if (resellers.errors) return
+    resellers = resellers.data
 
     const lowest = resellers[0]
     // if the expected price doesn't live up to the standards, then bail.
     if (item.lowestPrice != lowest.price) {
-        console.log(`FUCK, missed ${item.name} for ${item.lowestPrice}.`)
+        timeLog(`Missed ${item.name} for ${item.lowestPrice}.`)
         return
     }
 
     console.log(`UAID is ${lowest.userAssetId}`)
+    console.log(`Seller is ${lowest.seller.name}`)
 
     const productId = obj.ProductIdList[item.id].productId
 
@@ -133,6 +135,7 @@ async function checkIfProjected(assetId) {
 
     }
 
+    // if u error on this u might as well take the L..
     const resaleData = await rbx.market.getSalesHistory(assetId)
 
     const trueRap = resaleData.recentAveragePrice
