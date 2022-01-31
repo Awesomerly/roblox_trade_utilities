@@ -137,7 +137,7 @@ async function checkIfProjected(assetId) {
 
     // if u error on THIS u might as well take the L..
     const resaleData = await rbx.market.getSalesHistory(assetId)
-    if (resaleData.error) {
+    if (resaleData.errors) {
         return true
     }
 
