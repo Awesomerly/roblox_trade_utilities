@@ -27,12 +27,7 @@ export async function getSalesHistory(id) {
 }
 */
 export async function getResellers(id) {
-    const response = await request(`https://economy.roblox.com/v1/assets/${id}/resellers?cursor=&limit=10`) 
-    if (response.errors != undefined) return {
-        error: "The reseller endpoint is ratelimited."
-    }
-
-    return response.data
+    return await request(`https://economy.roblox.com/v1/assets/${id}/resellers?cursor=&limit=10`) 
 }
 
 export async function purchaseItem(productId, price, sellerId, userAssetId) {
