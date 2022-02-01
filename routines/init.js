@@ -7,6 +7,7 @@ import getSnipes from './snipes.js'
 import declineBots from './trades.js'
 import sell from './selling.js'
 import getProdIds from './productIds.js'
+import archiveMessages from './messages.js'
 
 async function start(fn, sec) {
     await fn()
@@ -25,6 +26,7 @@ async function startEverything() {
         if (cfg.selling.enabled) start(sell, 300)
 
         start(declineBots, 60)
+        start(archiveMessages, 20)
 }
 
 export default startEverything
