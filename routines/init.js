@@ -26,7 +26,7 @@ async function startEverything() {
         if (cfg.selling.enabled) start(sell, 300)
 
         start(declineBots, 60)
-        start(archiveMessages, 20)
+        if (cfg.messageArchiver.enabled) start(archiveMessages, 20)
 }
 
 export default startEverything

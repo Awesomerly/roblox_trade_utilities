@@ -22,6 +22,18 @@ const config =
         }
     },
 
+    messageArchiver: {
+        enabled: true,
+
+        // don't archive messages before this millisecond unix time.
+        // set to 0 for ultimate pwning
+        dateThreshold: 1486875600000,
+
+        // number of pages to search for trade messages in
+        // is overrided by dateThreshold
+        pagesToSearch: 20
+    },
+
     // Item Selling Config
     selling: {
         enabled: true,
