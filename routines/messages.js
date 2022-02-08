@@ -34,7 +34,7 @@ export default async function routine() {
                 }
         }
 
-        await sleep(100)
+        await sleep(800)
     }
 
     // dedupe through array -> set -> array conversion
@@ -48,7 +48,7 @@ export default async function routine() {
         const group = msgIdArray.splice(0, archiveBatch)
         const archiveResp = await rbx.messages.archiveMessages(group)
         if (archiveResp.errors) {
-            await sleep(100)
+            await sleep(800)
             continue
         }
 
