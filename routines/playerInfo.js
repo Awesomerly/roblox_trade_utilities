@@ -7,6 +7,10 @@ async function doOnce() {
     fired = true
     
     let userInfo = await rbx.self.getAuthInfo()
+    if (userInfo.errors[0].code == 0) {
+        console.error("\x1b[31mYour Roblox cookie is invalid.\x1b[0m")
+        process.exit()
+    }
 
     obj.MyInfo.id = userInfo.id
     obj.MyInfo.name = userInfo.name
