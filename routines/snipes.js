@@ -16,64 +16,61 @@ const minValue = config.snipes.minValue
 const maxValue = config.snipes.maxValue
 
 async function getSnipes() {
-    try{
-        const filteredPera = obj.PerathaxList
+    const filteredPera = obj.PerathaxList
         // Filter out rap items if snipeRap is false
-            .filter(elem => {
-                return config.snipes.snipeRap || obj.ItemsList[elem.id].value
-            })
-            .filter(elem => obj.ItemsList[elem.id].defaultValue >= minValue &&
-                            obj.ItemsList[elem.id].defaultValue <= maxValue)
+        .filter(elem => {
+            return config.snipes.snipeRap || obj.ItemsList[elem.id].value
+        })
+        // Restrict to min/max values
+        .filter(elem => obj.ItemsList[elem.id].defaultValue >= minValue &&
+                        obj.ItemsList[elem.id].defaultValue <= maxValue)
         // Only take entries within peraRange
-            .slice(...config.snipes.peraRange)
-        
-        // Get all the info from api for all the items in the filtered perathax
-        const itemResp = await rbx.market.getBatchInfo(
-            perathaxToBody(filteredPera)
-        )
-        
-        if (itemResp.errors) {
-            console.log("Too Many Snipe Requests. Taking a break")
-            await sleep(10000)
-            return
-        }
-
-        const promiseArray = []
-
-        for (const item of itemResp.data) {
-
-            // Why does this happen?
-            if (item == undefined) {
-                continue
-            }
-            const oldPrice = snipeCache[item.id]
-            if (oldPrice != item.lowestPrice) {
-                const value = obj.ItemsList[item.id].defaultValue
-                const dealPercent = (1 - (item.lowestPrice / value)) * 100
-
-                // Console logging. don't freak out.
-                const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
-                if (cached && dealPercent > displayPercent) {
-                    timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
-                }
-
-                if (dealPercent >= minPercent &&
-                    dealPercent <= maxPercent) {
-                        promiseArray.push(dirtyWork(item))
-                }
-            }
-
-            if (item.lowestPrice != undefined) {
-                snipeCache[item.id] = item.lowestPrice
-            }
-        }
-
-        if (!cached) cached = true
-
-        await Promise.all(promiseArray)
-    } catch (error) {
-        console.log(error)
+        .slice(...config.snipes.peraRange)
+    
+    // Get all the info from api for all the items in the filtered perathax
+    const itemResp = await rbx.market.getBatchInfo(
+        perathaxToBody(filteredPera)
+    )
+    
+    if (itemResp.errors) {
+        console.log("Too Many Snipe Requests. Taking a break")
+        await sleep(10000)
+        return
     }
+
+    const promiseArray = []
+
+    for (const item of itemResp.data) {
+
+        // Why does this happen?
+        if (item == undefined) {
+            continue
+        }
+        const oldPrice = snipeCache[item.id]
+        if (oldPrice != item.lowestPrice) {
+            const value = obj.ItemsList[item.id].defaultValue
+            const dealPercent = (1 - (item.lowestPrice / value)) * 100
+
+            // Console logging. don't freak out.
+            const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
+            if (cached && dealPercent > displayPercent) {
+                timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
+            }
+
+            if (dealPercent >= minPercent &&
+                dealPercent <= maxPercent) {
+                    promiseArray.push(dirtyWork(item))
+            }
+        }
+
+        if (item.lowestPrice != undefined) {
+            snipeCache[item.id] = item.lowestPrice
+        }
+    }
+
+    if (!cached) cached = true
+
+    await Promise.all(promiseArray)
 }
 
 async function dirtyWork(item) {
