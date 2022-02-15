@@ -34,7 +34,7 @@ async function selling() {
         // TODO: get updated product id list from cosmo
         let prodId = obj.ProductIdList[item.assetId]
         if (prodId == undefined) {
-            timeLog("ASSET ID ERROR")
+            timeLog(`The assetId ${item.assetId} isn't on Cosmo's list.`)
             continue
         }
         prodId = prodId.productID
