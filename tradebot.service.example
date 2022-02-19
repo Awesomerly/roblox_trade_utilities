@@ -1,0 +1,14 @@
+[Unit]
+Description=tradebot
+After=network.target
+
+[Service]
+Type=simple
+User=<USER>
+ExecStart=/usr/bin/node ./index.js
+WorkingDirectory=<TRADEBOT_DIRECTORY>
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
