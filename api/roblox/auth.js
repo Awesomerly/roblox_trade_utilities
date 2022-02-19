@@ -5,10 +5,10 @@ let csrf = ""
 
 // I love plagarism
 // https://robloxapi.wiki/wiki/X-CSRF-Token#JavaScript_(with_Node.js)_-c7d10c
-export async function request(url, options) {
+export async function request(url, options, cookie = process.env.ROBLOSECURITY) {
     const response = await fetch(url, {
         headers: {
-            Cookie: `.ROBLOSECURITY=${process.env.ROBLOSECURITY};`,
+            Cookie: `.ROBLOSECURITY=${cookie};`,
             "x-csrf-token": csrf,
             'Content-Type': 'application/json'
         },
