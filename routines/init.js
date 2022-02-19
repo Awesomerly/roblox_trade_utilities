@@ -31,7 +31,7 @@ async function start(fn, sec) {
     setIntervalSerial(async () => (
         fn().catch((err) => { 
             console.error(err)
-            process.exit()
+            process.exit(1)
         })
     ), sec * 1000, true)
 }
