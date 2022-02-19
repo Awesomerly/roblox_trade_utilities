@@ -13,7 +13,7 @@ async function doOnce() {
         } else {
             console.error("\x1b[31mGetting user details failed.\x1b[0m")
         }
-        process.exit()
+        process.exit(1)
     }
 
     obj.MyInfo.id = userInfo.id
