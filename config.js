@@ -47,7 +47,10 @@ const config =
         threshold: {
             min: 1,
             max: 4,
-        }
+
+        // Should you take the item off sale before putting it back on?
+        // Makes the bot look more convincing but wastes requests.
+        unsellItem: false
     },
 
     // Snipe Bot Config

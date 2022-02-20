@@ -69,9 +69,11 @@ async function selling() {
             }
         }
 
-        // try to unlist item first
-        await rbx.market.unsellItem(item.assetId, item.userAssetId)
-        await sleep(1000)
+        if (sellCfg.usellItem) {
+            // try to unlist item first
+            await rbx.market.unsellItem(item.assetId, item.userAssetId)
+            await sleep(1000)
+        }
         const resp = await rbx.market.sellItem(item.assetId, item.userAssetId, desiredPrice)
 
         if (resp.isValid == true) {
