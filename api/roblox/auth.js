@@ -1,5 +1,8 @@
 import fetch from "node-fetch"
+import UserAgent from 'user-agents'
+
 let csrf = ""
+const userAgent = new UserAgent()
 
 // TODO: enable multi cookie drifting
 
@@ -10,7 +13,8 @@ export async function request(url, options, cookie = process.env.ROBLOSECURITY) 
         headers: {
             Cookie: `.ROBLOSECURITY=${cookie};`,
             "x-csrf-token": csrf,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'User-Agent': userAgent.toString()
         },
         ...options
     });

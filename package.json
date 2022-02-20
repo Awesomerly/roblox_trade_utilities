@@ -12,7 +12,8 @@
     "dotenv": "^10.0.0",
     "jsdom": "^18.1.1",
     "jwt-decode": "^3.1.2",
-    "node-fetch": "^3.2.0"
+    "node-fetch": "^3.2.0",
+    "user-agents": "^1.0.932"
   },
   "type": "module"
 }
