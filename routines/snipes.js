@@ -71,9 +71,8 @@ async function getSnipes() {
 
 async function dirtyWork(item) {
     const itemInfo = obj.ItemsList[item.id]
-    const projStatus = await checkIfProjected(item.id)
-    console.log(itemInfo.name, projStatus)
-    if (projStatus) return
+    const isProjected = await checkIfProjected(item.id)
+    if (isProjected) return
     
     let resellers = await rbx.market.getResellers(item.id)
     if (resellers.errors) return
@@ -85,9 +84,6 @@ async function dirtyWork(item) {
         timeLog(`Missed ${item.name} for ${item.lowestPrice}.`)
         return
     }
-
-    console.log(`UAID is ${lowest.userAssetId}`)
-    console.log(`Seller is ${lowest.seller.name}`)
 
     const productId = obj.ProductIdList[item.id].productId
 
@@ -108,7 +104,11 @@ async function dirtyWork(item) {
 
         await sendPurchaseWebhook(webhookItem, lowest)
 
+    } else {
+        console.log(`UAID was ${lowest.userAssetId}`)
+        console.log(`Seller was ${lowest.seller.name}`)    
     }
+    
     console.log(res)
 }
 
