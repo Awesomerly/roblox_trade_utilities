@@ -41,15 +41,15 @@ async function getSnipes() {
     const promiseArray = []
 
     for (const item of itemResp.data) {
-
-        // Why does this happen?
-        if (item == undefined) {
-            continue
-        }
         const oldPrice = snipeCache[item.id]
+        
         if (oldPrice != item.lowestPrice) {
             const value = obj.ItemsList[item.id].defaultValue
             const dealPercent = (1 - (item.lowestPrice / value)) * 100
+
+            if (item.lowestPrice != undefined) {
+                snipeCache[item.id] = item.lowestPrice
+            }
 
             // Console logging. don't freak out.
             const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
@@ -59,12 +59,8 @@ async function getSnipes() {
 
             if (dealPercent >= minPercent &&
                 dealPercent <= maxPercent) {
-                    promiseArray.push(dirtyWork(item))
+                promiseArray.push(dirtyWork(item))
             }
-        }
-
-        if (item.lowestPrice != undefined) {
-            snipeCache[item.id] = item.lowestPrice
         }
     }
 
