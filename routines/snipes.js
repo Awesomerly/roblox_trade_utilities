@@ -47,26 +47,24 @@ async function getSnipes() {
             const value = obj.ItemsList[item.id].defaultValue
             const dealPercent = (1 - (item.lowestPrice / value)) * 100
 
+            if (dealPercent >= minPercent &&
+                dealPercent <= maxPercent) {
+                dirtyWork(item)
+            }
+
             if (item.lowestPrice != undefined) {
                 snipeCache[item.id] = item.lowestPrice
             }
 
             // Console logging. don't freak out.
-            const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
             if (cached && dealPercent > displayPercent) {
+            	const priceChange = `\x1b[33m${oldPrice || "nothing"} => ${item.lowestPrice}`
                 timeLog(`${item.name.trim()}:  ${priceChange}  \x1b[35m${value}  \x1b[31m${Math.round(dealPercent)}% \x1b[0m`)
-            }
-
-            if (dealPercent >= minPercent &&
-                dealPercent <= maxPercent) {
-                promiseArray.push(dirtyWork(item))
             }
         }
     }
 
     if (!cached) cached = true
-
-    await Promise.all(promiseArray)
 }
 
 async function dirtyWork(item) {
@@ -91,7 +89,6 @@ async function dirtyWork(item) {
                                               item.lowestPrice, 
                                               lowest.seller.id, 
                                               lowest.userAssetId)
-
     if (res.purchased == true) {
 
         const webhookItem = {
