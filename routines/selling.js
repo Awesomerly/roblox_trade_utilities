@@ -24,7 +24,9 @@ async function selling() {
     if (myInv.errors) return
     
     myInv = myInv
-//        .filter(item => item.recentAveragePrice < 3000)
+            .filter(item => item.recentAveragePrice < sellCfg.priceFilter.max || 
+                            sellCfg.priceFilter.max < 0)
+            .filter(item => item.recentAveragePrice > sellCfg.priceFilter.min)
             .filter(item => !(obj.ItemsList[item.assetId].value)) // Filter out valueds
             .filter(item => !(itemKeeps.serials.includes(item.serialNumber)))
             .filter(item => !(itemKeeps.assetIds.includes(item.assetId)))
