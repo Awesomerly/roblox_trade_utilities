@@ -4,12 +4,10 @@ import { calcPerathax } from '../modules/perathax.js'
 
 let firedCount = 0
 
-async function doFirst() {
+async function updateTable() {
     if (firedCount > 0) return
-    await perathaxBehavior()
-}
+    if (firedCount >= 120) firedCount = 0
 
-async function perathaxBehavior() {
     const table = await roli.getTable()
     if (table.success == true) {
         obj.PerathaxList = calcPerathax(table.data)
@@ -17,19 +15,14 @@ async function perathaxBehavior() {
 }
 
 async function routine() {
-    await doFirst()
-    if (firedCount == 120) {
-        firedCount = 0
-        await perathaxBehavior()
-    }
-
+    await updateTable()
 
     const itemsResp = await roli.getItems()
-    
+
     if (itemsResp.success == true) {
         obj.ItemsList = itemsResp.items
     }
-    
+
     firedCount += 1
 }
 
