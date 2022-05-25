@@ -2,7 +2,11 @@ import fetch from "node-fetch"
 import jwt_decode from "jwt-decode"
 import { JSDOM } from "jsdom"
 
-let isBanned = false
+const errorResp = {
+    "success": false,
+    "code": -1,
+    "message": "Unable to parse response."
+}
 
 export const demand = Object.freeze({
 	TERRIBLE: 0,
@@ -20,31 +24,15 @@ export const trend = Object.freeze({
 	FLUCTUATING: 4
 })
 
-// TODO throw error msgs that mean something outside of this bot :)
-function handleErrors(response) {
-    if (response.status == 403) {
-        setBan()
-        throw new Error("Banned.")
-    }
-    if (!response.ok)
-        throw Error(response.statusText)
-    return response
-}
-
-function setBan() {
-    if (isBanned === false) {
-        isBanned = true
-        setTimeout(() => { isBanned = false }, 60000)
-    }
-}
-
+/*
 export async function getSales() {
-    if (isBanned)
-        throw new Error("Banned.")
-    let resp = await fetch('https://www.rolimons.com/api/activity')
-        .then(handleErrors)
+    resp = await fetch('https://www.rolimons.com/api/activity')
         .then(res => res.json())
-        .then(json => json.activities)
+        .catch(() => { return errorResp })
+
+    if (resp.success == false) return resp
+
+    resp = resp.activities
 
     // TODO figure out what happens when a new item gets released.
     resp = resp.sort((a, b) => b[0] - a[0])
@@ -60,13 +48,14 @@ export async function getSales() {
 
     return sold
 }
+*/
 
 export async function getItems() {
-    if (isBanned)
-        throw new Error("Banned.")
     let resp = await fetch("https://www.rolimons.com/itemapi/itemdetails")
-        .then(handleErrors)
         .then(res => res.json())
+        .catch(() => { return errorResp })
+
+    if (resp.success == false) return resp
 
     let formattedInfo = Object.fromEntries(Object.entries(resp.items).map(([assetId, assetArr]) => {
         let assetInfo = {
@@ -90,7 +79,8 @@ export async function getItems() {
         return [assetId, assetInfo]
     }))
 
-    return formattedInfo
+    resp.items = formattedInfo
+    return resp
 
 }
 
@@ -118,28 +108,34 @@ export async function getItems() {
 
 // TODO: add labels to this
 export async function getTable() {
-    if (isBanned)
-        throw new Error("Banned.")
 
     const pagetxt = await fetch("https://www.rolimons.com/itemtable")
-        .then(handleErrors)
         .then(res => res.text())
 
-    // using jsdom to parse the text
-    const dom = new JSDOM(pagetxt)
-    const doc = dom.window.document.body
+    try {
+        // using jsdom to parse the text
+        const dom = new JSDOM(pagetxt)
+        const doc = dom.window.document.body
 
-    // get all script text
-    const scripts = [...doc.querySelectorAll("script")]
-        .map(x => x.textContent)
+        // get all script text
+        const scripts = [...doc.querySelectorAll("script")]
+            .map(x => x.textContent)
 
-    // find script with right variable declaration in it
-    const tableScr = scripts.filter((str) => str.includes("item_details"))[0]
-    // slice from the first curly bracket to before the ending semicolon
-    const obj = tableScr.slice(tableScr.indexOf("{"), -1)
+        // find script with right variable declaration in it
+        const tableScr = scripts.filter((str) => str.includes("item_details"))[0]
+        // slice from the first curly bracket to before the ending semicolon
+        const obj = tableScr.slice(tableScr.indexOf("{"), -1)
 
-    return JSON.parse(obj)
+        return {
+            "success": true,
+            "data": JSON.parse(obj)
+        }
+    } catch (err) {
+        return errorResp
+    }
 }
+
+/*
 
 // TODO: If the token expires at a reasonable time, when there's an error, regenerate a token
 // TODO: Throw errors if stuff goes wrong
@@ -167,3 +163,4 @@ export async function sendAd(offerIds, requestIds = [], tags = []) {
 
     return resp
 }
+*/
