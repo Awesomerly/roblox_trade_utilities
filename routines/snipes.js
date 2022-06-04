@@ -40,6 +40,9 @@ async function getSnipes() {
 
     const promiseArray = []
 
+    // NO IDEA WHAT IS HAPPENING HERE.
+    if (obj.itemsList == undefined) return;
+
     for (const item of itemResp.data) {
         const oldPrice = snipeCache[item.id]
         
