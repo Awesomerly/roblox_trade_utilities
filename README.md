@@ -2,7 +2,7 @@
 
 ![Graph](https://i.imgur.com/m4UhZpS.png)
 
-## THIS PROGRAM IS OUTDATED. THE LAST TIME I RAN THIS WAS IN 2021
+## THIS PROGRAM IS OUTDATED AND UNSUPPORTED. DO NOT ASK ME FOR HELP USING THIS.
 
 ## Description
 This program helped me make a ton of robux a few years ago. It has some automated routines to interact with the roblox economy. A lot of the ideas for this came from a friend of mine.
