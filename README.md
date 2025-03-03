@@ -1,5 +1,11 @@
-# rbxtradebot
+# Roblox Trade Utilities
+
 ![Graph](https://i.imgur.com/m4UhZpS.png)
+
+## THIS PROGRAM IS OUTDATED. THE LAST TIME I RAN THIS WAS IN 2021
+
+## Description
+This program helped me make a ton of robux a few years ago. It has some automated routines to interact with the roblox economy. A lot of the ideas for this came from a friend of mine.
 
 ## Setup
 * Install node.js (I use v16 LTS) via whatever method you desire.
