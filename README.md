@@ -5,7 +5,7 @@
 ## THIS PROGRAM IS OUTDATED AND UNSUPPORTED. DO NOT ASK ME FOR HELP USING THIS.
 
 ## Description
-This program helped me make a ton of robux a few years ago. It has some automated routines to interact with the roblox economy. A lot of the ideas for this came from a friend of mine.
+This program helped me make a ton of robux a few years ago. It has some automated routines to interact with the roblox economy. A lot of the ideas for this came from a friend of mine. This project has a special place in my heart because it's one of the first fully fleshed out and organized programming projects I ever made.
 
 ## Setup
 * Install node.js (I use v16 LTS) via whatever method you desire.
